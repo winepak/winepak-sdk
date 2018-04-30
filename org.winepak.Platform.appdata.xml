@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="runtime">
+    <id>org.winepak.Platform</id>
+    <metadata_license>CC0</metadata_license>
+    <name>Winepak Platform</name>
+    <summary>Shared libraries used by Winepak applications</summary>
+    <project_group>Winepak</project_group>
+    <url type="homepage">https://github.com/winepak</url>
+</component>

@@ -1,0 +1,280 @@
+{
+    "build-runtime": true,
+
+    "id": "org.winepak.Sdk",
+    "id-platform": "org.winepak.Platform",
+    "branch": "stable",
+
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "1.6",
+
+    "sdk": "org.freedesktop.Sdk",
+
+    "add-extensions": {
+        "org.winepak.Platform.Extension" : {
+            "version": "stable",
+            "directory": "winepak/extension",
+            "subdirectories": true,
+            "autodelete": true,
+            "no-autodownload": true
+        }
+    },
+
+    "platform-extensions": [
+        "org.freedesktop.Platform.Locale"
+    ],
+
+    "inherit-extensions": [
+        "org.freedesktop.Platform.GL",
+        "org.freedesktop.Platform.Timezones",
+        "org.freedesktop.Platform.GStreamer",
+        "org.freedesktop.Platform.VAAPI.Intel",
+        "org.freedesktop.Sdk.Extension"
+    ],
+
+    "finish-args": [
+        "--sdk=org.winepak.Sdk//stable",
+        "--runtime=org.winepak.Platform//stable",
+
+        "--allow=multiarch",
+
+        "--env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share",
+        "--env=WINEDEBUG=-all"
+    ],
+
+    "cleanup": [
+        "/man",
+        "/share/man"
+    ],
+
+    "cleanup-platform": [
+        "/include",
+        "/share/aclocal",
+        "/share/pkgconfig",
+        "/lib/pkgconfig"
+    ],
+
+    "build-options": {
+        "cflags": "-O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2",
+        "cxxflags": "-O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2",
+        "ldflags": "-fstack-protector-strong -Wl,-z,relro,-z,now",
+        "env": {
+            "V": "1"
+        }
+    },
+
+    "modules": [
+        {
+            "name": "platform-setup",
+            "buildsystem": "simple",
+            "build-commands": [
+                 "mkdir -p /usr/winepak",
+                 "mkdir -p /usr/winepak/extension"
+            ]
+        },
+        {
+            "name": "wine-win64",
+            "only-arches": ["x86_64"],
+            "modules": [
+                {
+                    "name": "wine-win64-base",
+                    "builddir": true,
+                    "config-opts": [
+                        "--enable-win64",
+                        "--disable-win16",
+                        "--disable-tests",
+                        "--with-x",
+                        "--without-cups",
+                        "--without-curses",
+                        "--without-capi",
+                        "--without-glu",
+                        "--without-gphoto",
+                        "--without-gsm",
+                        "--without-hal",
+                        "--without-ldap",
+                        "--without-netapi",
+                        "--without-opencl",
+                        "--without-pcap",
+                        "--without-udev",
+                        "--without-v4l"
+                    ],
+                    "cleanup": [
+                        "/share/man",
+                        "/share/applications"
+                    ],
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://dl.winehq.org/wine/source/3.x/wine-3.6.tar.xz",
+                            "sha256": "78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c"
+                        }
+                    ]
+                },
+                {
+                    "disabled": true,
+                    "name": "wine-win64-wow64",
+                    "builddir": true,
+                    "config-opts": [
+                        "--with-wine64=/run/build/wine-win64-base/_flatpak_build",
+                        "--disable-win16",
+                        "--disable-tests",
+                        "--with-x",
+                        "--without-cups",
+                        "--without-curses",
+                        "--without-capi",
+                        "--without-glu",
+                        "--without-gphoto",
+                        "--without-gsm",
+                        "--without-hal",
+                        "--without-ldap",
+                        "--without-netapi",
+                        "--without-opencl",
+                        "--without-pcap",
+                        "--without-udev",
+                        "--without-v4l"
+                    ],
+                    "cleanup": [
+                        "/share/man",
+                        "/share/applications"
+                    ],
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://dl.winehq.org/wine/source/3.x/wine-3.6.tar.xz",
+                            "sha256": "78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c"
+                        },
+                        {
+                            "type": "shell",
+                            "commands": [
+                                "ls -la /",
+                                "ls -la /run",
+                                "ls -la /run/build",
+                                "ls -la /run/build/wine-win64-base"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "wine-win32",
+            "only-arches": ["i386"],
+            "builddir": true,
+            "config-opts": [
+                "--disable-win64",
+                "--disable-win16",
+                "--disable-tests",
+                "--with-x",
+                "--without-cups",
+                "--without-curses",
+                "--without-capi",
+                "--without-glu",
+                "--without-gphoto",
+                "--without-gsm",
+                "--without-hal",
+                "--without-ldap",
+                "--without-netapi",
+                "--without-opencl",
+                "--without-pcap",
+                "--without-udev",
+                "--without-v4l"
+            ],
+            "cleanup": [
+                "/bin/function_grep.pl",
+                "/include",
+                "/share/man",
+                "/share/applications"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://dl.winehq.org/wine/source/3.x/wine-3.6.tar.xz",
+                    "sha256": "78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c"
+                }
+            ]
+        },
+        {
+            "name": "wine-gecko",
+            "buildsystem": "simple",
+            "build-commands": [
+                 "install -D --target-directory=/usr/share/wine/gecko/ wine_gecko-*.msi"
+            ],
+            "no-make-install": true,
+            "sources": [
+                {
+                    "type": "file",
+                    "only-arches": ["x86_64"],
+                    "url": "https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi",
+                    "sha256": "c565ea25e50ea953937d4ab01299e4306da4a556946327d253ea9b28357e4a7d"
+                },
+                {
+                    "type": "file",
+                    "url": "https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi",
+                    "sha256": "3b8a361f5d63952d21caafd74e849a774994822fb96c5922b01d554f1677643a"
+                }
+            ]
+        },
+        {
+            "name": "wine-mono",
+            "buildsystem": "simple",
+            "build-commands": [
+                 "install -D --target-directory=/usr/share/wine/mono/ wine-mono-*.msi"
+            ],
+            "no-make-install": true,
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://dl.winehq.org/wine/wine-mono/4.7.1/wine-mono-4.7.1.msi",
+                    "sha256": "2c8d5db7f833c3413b2519991f5af1f433d59a927564ec6f38a3f1f8b2c629aa"
+                }
+            ]
+        },
+        {
+            "name": "cabextract",
+            "buildsystem": "autotools",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.cabextract.org.uk/cabextract-1.6.tar.gz",
+                    "sha256": "cee661b56555350d26943c5e127fc75dd290b7f75689d5ebc1f04957c4af55fb"
+                }
+            ]
+        },
+        {
+            "name": "winetricks",
+            "buildsystem": "simple",
+            "build-commands": [
+                "make",
+                "make install"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/Winetricks/winetricks/archive/20180217.tar.gz",
+                    "sha256": "10e11dd150f1629af17f5549404d66b17968130cbdec6a4524b51d9291484a47"
+                }
+            ]
+        },
+        {
+            "name": "metainfo",
+            "buildsystem": "simple",
+            "build-commands": [
+                "mkdir -p /usr/share/appdata",
+                "install org.winepak.Platform.appdata.xml /usr/share/appdata",
+                "install org.winepak.Sdk.appdata.xml /usr/share/appdata",
+                "appstream-compose --basename=org.winepak.Platform --prefix=/usr --origin=flatpak org.winepak.Platform",
+                "appstream-compose --basename=org.winepak.Sdk --prefix=/usr --origin=flatpak org.winepak.Sdk"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "path": "org.winepak.Sdk.appdata.xml"
+                },
+                {
+                    "type": "file",
+                    "path": "org.winepak.Platform.appdata.xml"
+                }
+            ]
+        }
+    ]
+}
