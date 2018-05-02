@@ -142,15 +142,6 @@
                             "type": "archive",
                             "url": "https://dl.winehq.org/wine/source/3.x/wine-3.6.tar.xz",
                             "sha256": "78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c"
-                        },
-                        {
-                            "type": "shell",
-                            "commands": [
-                                "ls -la /",
-                                "ls -la /run",
-                                "ls -la /run/build",
-                                "ls -la /run/build/wine-win64-base"
-                            ]
                         }
                     ]
                 }
