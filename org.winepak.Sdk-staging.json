@@ -120,7 +120,7 @@
                     "name": "wine-staging-win64-wow64",
                     "builddir": true,
                     "config-opts": [
-                        "--with-wine64=/run/build/wine-win64-core/_flatpak_build",
+                        "--with-wine64=/run/build/wine-win64-base/_flatpak_build",
                         "--disable-win16",
                         "--disable-tests",
                         "--with-x",
