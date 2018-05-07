@@ -20,6 +20,14 @@
         }
     },
 
+    "add-build-extensions": {
+        "org.freedesktop.Platform.Compat32": {
+            "directory": "lib/32bit",
+            "add-ld-path": "lib",
+            "version": "1.6"
+        }
+    },
+
     "platform-extensions": [
         "org.freedesktop.Platform.Locale"
     ],
@@ -39,6 +47,7 @@
         "--allow=multiarch",
 
         "--env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share",
+        "--env=LD_LIBRARY_PATH=/usr/lib:/usr/lib/32bit",
         "--env=WINEDEBUG=-all"
     ],
 
@@ -111,7 +120,6 @@
                     ]
                 },
                 {
-                    "disabled": true,
                     "name": "wine-win64-wow64",
                     "builddir": true,
                     "config-opts": [
@@ -142,15 +150,6 @@
                             "type": "archive",
                             "url": "https://dl.winehq.org/wine/source/3.x/wine-3.6.tar.xz",
                             "sha256": "78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c"
-                        },
-                        {
-                            "type": "shell",
-                            "commands": [
-                                "ls -la /",
-                                "ls -la /run",
-                                "ls -la /run/build",
-                                "ls -la /run/build/wine-win64-base"
-                            ]
                         }
                     ]
                 }

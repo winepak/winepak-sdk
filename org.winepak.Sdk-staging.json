@@ -20,6 +20,14 @@
         }
     },
 
+    "add-build-extensions": {
+        "org.freedesktop.Platform.Compat32": {
+            "directory": "lib/32bit",
+            "add-ld-path": "lib",
+            "version": "1.6"
+        }
+    },
+
     "platform-extensions": [
         "org.freedesktop.Platform.Locale"
     ],
@@ -39,6 +47,7 @@
         "--allow=multiarch",
 
         "--env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share",
+        "--env=LD_LIBRARY_PATH=/usr/lib:/usr/lib/32bit",
         "--env=WINEDEBUG=-all"
     ],
 
@@ -60,10 +69,7 @@
         "ldflags": "-fstack-protector-strong -Wl,-z,relro,-z,now",
         "env": {
             "V": "1"
-        },
-        "build-args": [
-            "--allow=multiarch"
-        ]
+        }
     },
 
     "modules": [
@@ -116,11 +122,10 @@
                     ]
                 },
                 {
-                    "disabled": true,
                     "name": "wine-staging-win64-wow64",
                     "builddir": true,
                     "config-opts": [
-                        "--with-wine64=/run/build/wine-win64-core/_flatpak_build",
+                        "--with-wine64=/run/build/wine-staging-win64-base/_flatpak_build",
                         "--disable-win16",
                         "--disable-tests",
                         "--with-x",
