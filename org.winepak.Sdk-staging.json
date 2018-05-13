@@ -20,14 +20,6 @@
         }
     },
 
-    "add-build-extensions": {
-        "org.freedesktop.Platform.Compat32": {
-            "directory": "lib/32bit",
-            "add-ld-path": "lib",
-            "version": "1.6"
-        }
-    },
-
     "platform-extensions": [
         "org.freedesktop.Platform.Locale"
     ],
@@ -47,7 +39,6 @@
         "--allow=multiarch",
 
         "--env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share",
-        "--env=LD_LIBRARY_PATH=/usr/lib:/usr/lib/32bit",
         "--env=WINEDEBUG=-all"
     ],
 
@@ -77,103 +68,16 @@
             "name": "platform-setup",
             "buildsystem": "simple",
             "build-commands": [
-                 "mkdir -p /usr/winepak",
-                 "mkdir -p /usr/winepak/extension"
+                "mkdir -p /usr/winepak",
+                "mkdir -p /usr/winepak/extension",
+                "mkdir -p /usr/lib/32bit"
             ]
         },
         {
             "name": "wine-staging-win64",
             "only-arches": ["x86_64"],
-            "modules": [
-                {
-                    "name": "wine-staging-win64-base",
-                    "builddir": true,
-                    "config-opts": [
-                        "--enable-win64",
-                        "--disable-win16",
-                        "--disable-tests",
-                        "--with-x",
-                        "--without-cups",
-                        "--without-curses",
-                        "--without-capi",
-                        "--without-glu",
-                        "--without-gphoto",
-                        "--without-gsm",
-                        "--without-hal",
-                        "--without-ldap",
-                        "--without-netapi",
-                        "--without-opencl",
-                        "--without-pcap",
-                        "--without-udev",
-                        "--without-v4l"
-                    ],
-                    "cleanup": [
-                        "/bin/function_grep.pl",
-                        "/include",
-                        "/share/man",
-                        "/share/applications"
-                    ],
-                    "sources": [
-                        {
-                            "type": "archive",
-                            "url": "https://dl.winehq.org/wine/source/3.x/wine-3.6.tar.xz",
-                            "sha256": "78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c"
-                        }
-                    ]
-                },
-                {
-                    "name": "wine-staging-win64-wow64",
-                    "builddir": true,
-                    "config-opts": [
-                        "--with-wine64=/run/build/wine-staging-win64-base/_flatpak_build",
-                        "--disable-win16",
-                        "--disable-tests",
-                        "--with-x",
-                        "--without-cups",
-                        "--without-curses",
-                        "--without-capi",
-                        "--without-glu",
-                        "--without-gphoto",
-                        "--without-gsm",
-                        "--without-hal",
-                        "--without-ldap",
-                        "--without-netapi",
-                        "--without-opencl",
-                        "--without-pcap",
-                        "--without-udev",
-                        "--without-v4l"
-                    ],
-                    "cleanup": [
-                        "/share/man",
-                        "/share/applications"
-                    ],
-                    "sources": [
-                        {
-                            "type": "archive",
-                            "url": "https://dl.winehq.org/wine/source/3.x/wine-3.6.tar.xz",
-                            "sha256": "78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c"
-                        },
-                        {
-                            "type": "archive",
-                            "url": "https://github.com/wine-staging/wine-staging/archive/v3.6.tar.gz",
-                            "sha256": "2ec8fc3f8edc282e4ed94ccb7c67524503b02909affc24499ea6bdf7e734bb3f"
-                        },
-                        {
-                            "type": "shell",
-                            "commands": [
-                                "./patches/patchinstall.sh DESTDIR=$(pwd) --all"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "wine-staging-win32",
-            "only-arches": ["i386"],
-            "builddir": true,
             "config-opts": [
-                "--disable-win64",
+                "--enable-win64",
                 "--disable-win16",
                 "--disable-tests",
                 "--with-x",
@@ -198,13 +102,60 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://dl.winehq.org/wine/source/3.x/wine-3.6.tar.xz",
-                    "sha256": "78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c"
+                    "url": "https://dl.winehq.org/wine/source/3.x/wine-3.8.tar.xz",
+                    "sha256": "02b00c6c948b3bab717e1b1e2075a5406b14d138bd2e01fdb1268a93d1c20d51"
                 },
                 {
                     "type": "archive",
-                    "url": "https://github.com/wine-staging/wine-staging/archive/v3.6.tar.gz",
-                    "sha256": "2ec8fc3f8edc282e4ed94ccb7c67524503b02909affc24499ea6bdf7e734bb3f"
+                    "url": "https://github.com/wine-staging/wine-staging/archive/v3.8.tar.gz",
+                    "sha256": "fd40c24e00b3da4498f78885a5d3c4a9699790c1de78f6e43ff151432824f2ad"
+                },
+                {
+                    "type": "shell",
+                    "commands": [
+                        "./patches/patchinstall.sh DESTDIR=$(pwd) --all"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "wine-staging-win32",
+            "only-arches": ["i386"],
+            "config-opts": [
+                "--disable-win64",
+                "--disable-win16",
+                "--disable-tests",
+                "--with-x",
+                "--without-cups",
+                "--without-curses",
+                "--without-capi",
+                "--without-glu",
+                "--without-gphoto",
+                "--without-gsm",
+                "--without-hal",
+                "--without-ldap",
+                "--without-netapi",
+                "--without-opencl",
+                "--without-pcap",
+                "--without-udev",
+                "--without-v4l"
+            ],
+            "cleanup": [
+                "/bin/function_grep.pl",
+                "/include",
+                "/share/man",
+                "/share/applications"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://dl.winehq.org/wine/source/3.x/wine-3.8.tar.xz",
+                    "sha256": "02b00c6c948b3bab717e1b1e2075a5406b14d138bd2e01fdb1268a93d1c20d51"
+                },
+                {
+                    "type": "archive",
+                    "url": "https://github.com/wine-staging/wine-staging/archive/v3.8.tar.gz",
+                    "sha256": "fd40c24e00b3da4498f78885a5d3c4a9699790c1de78f6e43ff151432824f2ad"
                 },
                 {
                     "type": "shell",
