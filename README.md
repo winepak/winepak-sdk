@@ -31,7 +31,7 @@ Now we need to build the `org.winepak.Platform` and `org.winepak.Sdk`. Depending
 
 Building `wine`, `wine-gecko`, `wine-mono`, and `cabextract` can take a while.
 
-It's also recommended you build Wine extensions with the [staging](https://github.com/wine-staging/wine-staging) branch. A good amount of applications need the patches from `staging` to work.
+It's also recommended you build Wine extensions with the [staging](https://github.com/wine-staging/wine-staging) branch. A good amount of applications need the patches from `staging` to work. Here I'm building `wine 3.8-staging`:
 
     flatpak-builder --arch=i386 --ccache --keep-build-dirs --force-clean --repo=winepak-repo builds winepak-sdk-images/wine/3.8-staging/org.winepak.Platform.Wine.json
     flatpak-builder --arch=x86_64 --ccache --keep-build-dirs --force-clean --repo=winepak-repo builds winepak-sdk-images/wine/3.8-staging/org.winepak.Platform.Wine.json
@@ -39,7 +39,14 @@ It's also recommended you build Wine extensions with the [staging](https://githu
 #### Building WoW64 Support
 In order for Wine 64bit to be full functional you need to something called "WoW64" support, which is a Windows method of loading 32bit libraries and binaries on a 64bit environment. The current method to achieve this is building a "*.Compat32" extension, which is simply the i386/32bit `*.Platform` bundle as an extension to the x86_64/64bit Platform.
 
-    Currently not working, no ETA.
+To do this run:
+
+    flatpak build-commit-from --verbose --src-ref=runtime/org.winepak.Sdk/i386/3.0 winepak-repo runtime/org.winepak.Sdk.Compat32/x86_64/3.0
+    flatpak build-commit-from --verbose --src-ref=runtime/org.winepak.Platform/i386/3.0 winepak-repo runtime/org.winepak.Platform.Compat32/x86_64/3.0
+
+It's also recommended you build Wine extensions with the [staging](https://github.com/wine-staging/wine-staging) branch. A good amount of applications need the patches from `staging` to work. Here I'm building `wine 3.8-staging`:
+
+    flatpak build-commit-from --verbose --src-ref=runtime/org.winepak.Platform.Wine/i386/3.8-staging winepak-repo runtime/org.winepak.Platform.Wine.Compat32/x86_64/3.8-staging
 
 ### Install the runtime
 Now install the `org.winepak.*` runtime, if you don't build with a GPG key then you will be forced to install the runtime with `--user`.
@@ -50,11 +57,17 @@ Now install the `org.winepak.*` runtime, if you don't build with a GPG key then 
     flatpak --user install winepak org.winepak.Sdk/i386/3.0
     flatpak --user install winepak org.winepak.Platform/i386/3.0
 
-If you build the `staging` branch add install those as well:
+If you built the `staging` branch, install those as well:
 
     flatpak --user install winepak org.winepak.Platform.Wine/i386/3.8-staging
     flatpak --user install winepak org.winepak.Platform.Wine/x86_64/3.8-staging
-    
+
+#### Install Compat32
+If you built Compat32/WoW64 support install those as well:
+
+    flatpak --user install winepak org.winepak.Sdk.Compat32/x86_64/3.0
+    flatpak --user install winepak org.winepak.Platform.Compat32/x86_64/3.0
+    flatpak --user install winepak org.winepak.Platform.Wine.Compat32/x86_64/3.8-staging
 
 ### Building an application
 See [winepak/applications](https://github.com/winepak/applications).
