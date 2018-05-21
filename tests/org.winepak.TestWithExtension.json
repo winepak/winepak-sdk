@@ -1,0 +1,62 @@
+{
+    "app-id" : "org.winepak.TestWithExtension",
+    "branch" : "stable",
+    "runtime" : "org.winepak.Platform",
+    "runtime-version" : "3.0",
+    "sdk" : "org.winepak.Sdk",
+    "command" : "winepak-test",
+    "add-extensions": {
+        "org.winepak.Platform.Wine": {
+            "directory": "lib/wine",
+            "version": "3.8-staging",
+            "add-ld-path": "lib",
+            "no-autodownload": false
+        }
+    },
+    "finish-args" : [
+        "--share=ipc",
+        "--socket=x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--share=network",
+        "--device=dri",
+        "--allow=multiarch"
+    ],
+    "modules" : [
+        {
+            "name": "setup-wine",
+            "buildsystem": "simple",
+            "build-commands": [
+                "mkdir -p /app/lib/wine"
+            ]
+        },
+        {
+            "name" : "winepak-test",
+            "buildsystem" : "simple",
+            "build-commands" : [
+                "install -d /app/bin",
+                "install winepak-test /app/bin"
+            ],
+            "sources" : [
+                {
+                    "type" : "script",
+                    "only-arches" : ["x86_64"],
+                    "dest-filename" : "winepak-test",
+                    "commands" : [
+                        "echo \"Going to attempt to run a 64bit wine:\"",
+                        "wine64 --version"
+                    ]
+                },
+                {
+                    "type" : "script",
+                    "only-arches" : ["i386"],
+                    "dest-filename" : "winepak-test",
+                    "commands" : [
+                        "echo \"Going to attempt to run a 32bit wine:\"",
+                        "wine --version"
+                    ]
+                }
+            ]
+        }
+    ]
+}
