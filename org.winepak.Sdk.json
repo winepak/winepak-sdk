@@ -7,14 +7,22 @@
     "runtime-version": "1.6",
     "sdk": "org.freedesktop.Sdk",
     "add-extensions": {
-        "org.winepak.Platform.Wine": {
-            "directory": "lib/wine",
+        "org.winepak.Platform.Compat32": {
+            "directory": "lib/32bit",
             "version": "3.0",
             "versions": "3.0",
             "add-ld-path": "lib",
             "subdirectories": false,
             "autodelete": false,
             "no-autodownload": false
+        },
+        "org.winepak.Platform.Wine": {
+            "directory": "lib/wine",
+            "version": "3.0",
+            "versions": "3.0",
+            "add-ld-path": "lib",
+            "subdirectories": false,
+            "autodelete": false
         },
         "org.winepak.Platform.Extension": {
             "directory": "lib/extension",
@@ -27,14 +35,6 @@
             "directory": "lib/sdk",
             "version": "3.0",
             "subdirectories": true,
-            "autodelete": true,
-            "no-autodownload": true
-        },
-        "org.winepak.Sdk.Compat32": {
-            "directory": "lib/32bit",
-            "version": "3.0",
-            "add-ld-path": "lib",
-            "subdirectories": false,
             "autodelete": true,
             "no-autodownload": true
         }
@@ -53,7 +53,7 @@
         "--sdk=org.winepak.Sdk//3.0",
         "--runtime=org.winepak.Platform//3.0",
         "--allow=multiarch",
-        "--env=PATH=/app/bin:/app/lib/wine/bin:/app/lib/wine-32bit/bin:/usr/lib/wine/bin:/usr/lib/wine-32bit/bin:/usr/bin",
+        "--env=PATH=/app/bin:/app/lib/wine/bin:/app/lib/wine-32bit/bin:/app/lib/32bit/wine:/usr/lib/wine/bin:/usr/lib/wine-32bit/bin:/usr/bin:/usr/lib/32bit/bin",
         "--env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share",
         "--env=WINEDEBUG=-all"
     ],
@@ -80,10 +80,10 @@
             "name": "platform-setup",
             "buildsystem": "simple",
             "build-commands": [
+                "mkdir -p /usr/lib/32bit",
                 "mkdir -p /usr/lib/wine",
                 "mkdir -p /usr/lib/extension",
-                "mkdir -p /usr/lib/sdk",
-                "mkdir -p /usr/lib/32bit"
+                "mkdir -p /usr/lib/sdk"
             ]
         },
         {
