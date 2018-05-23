@@ -1,5 +1,5 @@
 {
-    "app-id" : "org.winepak.TestWithExtensionWinetricks",
+    "app-id" : "org.winepak.Test-WoW64",
     "branch" : "stable",
     "runtime" : "org.winepak.Platform",
     "runtime-version" : "3.0",
@@ -70,14 +70,10 @@
                     "only-arches" : ["x86_64"],
                     "dest-filename" : "winepak-test",
                     "commands" : [
-                        "export WINEARCH=win64",
-                        "export WINEPREFIX=\"${XDG_DATA_HOME}/wine-${WINEARCH}\"",
-                        "",
+                        "echo \"Going to attempt to run a 64bit wine:\"",
                         "wine64 --version",
-                        "",
-                        "wineboot",
-                        "",
-                        "winetricks --unattended d3dx9"
+                        "echo \"Going to attempt to run a 32bit wine:\"",
+                        "wine --version"
                     ]
                 },
                 {
@@ -85,14 +81,8 @@
                     "only-arches" : ["i386"],
                     "dest-filename" : "winepak-test",
                     "commands" : [
-                        "export WINEARCH=win32",
-                        "export WINEPREFIX=\"${XDG_DATA_HOME}/wine-${WINEARCH}\"",
-                        "",
-                        "wine --version",
-                        "",
-                        "wineboot",
-                        "",
-                        "winetricks -v --unattended d3dx9"
+                        "echo \"Going to attempt to run a 32bit wine:\"",
+                        "wine --version"
                     ]
                 }
             ]

@@ -1,5 +1,5 @@
 {
-    "app-id" : "org.winepak.TestWow64",
+    "app-id" : "org.winepak.Test-Wine-Extension-Winetricks",
     "branch" : "stable",
     "runtime" : "org.winepak.Platform",
     "runtime-version" : "3.0",
@@ -70,12 +70,14 @@
                     "only-arches" : ["x86_64"],
                     "dest-filename" : "winepak-test",
                     "commands" : [
-                        "ls -la /app/lib/wine/bin",
-                        "ls -la /app/lib/wine-32bit/bin",
-                        "echo \"Going to attempt to run a 64bit wine:\"",
+                        "export WINEARCH=win64",
+                        "export WINEPREFIX=\"${XDG_DATA_HOME}/wine-${WINEARCH}\"",
+                        "",
                         "wine64 --version",
-                        "echo \"Going to attempt to run a 32bit wine:\"",
-                        "wine --version"
+                        "",
+                        "wineboot",
+                        "",
+                        "winetricks --unattended d3dx9"
                     ]
                 },
                 {
@@ -83,8 +85,14 @@
                     "only-arches" : ["i386"],
                     "dest-filename" : "winepak-test",
                     "commands" : [
-                        "echo \"Going to attempt to run a 32bit wine:\"",
-                        "wine --version"
+                        "export WINEARCH=win32",
+                        "export WINEPREFIX=\"${XDG_DATA_HOME}/wine-${WINEARCH}\"",
+                        "",
+                        "wine --version",
+                        "",
+                        "wineboot",
+                        "",
+                        "winetricks -v --unattended d3dx9"
                     ]
                 }
             ]
