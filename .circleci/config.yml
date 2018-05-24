@@ -2,16 +2,11 @@ version: 2
 jobs:
   build:
     docker:
-      - image: fedora:latest
+      - image: flatpak/flatpak-builder:base
      
     working_directory: ~/repo
 
     steps:
-      - run:
-          name: Installing flatpak & flatpak-builder
-          command: |
-              dnf -y install flatpak flatpak-builder
-          
       - checkout
       
       - run:
