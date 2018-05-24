@@ -1,0 +1,62 @@
+sudo: required
+
+branches:
+  only:
+  - master
+
+services:
+  - docker
+
+before_install:
+  - sudo apt-get update
+
+script:
+  - docker run --privileged --volume "${PWD}":/sdk/ -it fedora:28 /bin/bash
+  - flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+  - flatpak install flathub org.freedesktop.Sdk/i386/1.6
+  - flatpak install flathub org.freedesktop.Sdk/x86_64/1.6
+  - flatpak install flathub org.freedesktop.Platform/i386/1.6
+  - flatpak install flathub org.freedesktop.Platform/x86_64/1.6
+  - flatpak remote-add --if-not-exists winepak winepak-repo
+  - |
+    flatpak-builder         \
+        --arch=i386         \
+        --ccache            \
+        --force-clean       \
+        --repo=winepak-repo \
+        winepak-build       \
+        /sdk/org.winepak.Sdk.json
+  - |
+    flatpak-builder         \
+        --arch=x86_64       \
+        --ccache            \
+        --force-clean       \
+        --repo=winepak-repo \
+        winepak-build       \
+        /sdk/org.winepak.Sdk.json
+  - |
+    flatpak build-commit-from                           \
+        --src-ref=runtime/org.winepak.Platform/i386/3.0 \
+        winepak-repo                                    \
+        runtime/org.winepak.Platform.Compat32/x86_64/3.0
+  - |
+    flatpak-builder         \
+        --arch=i386         \
+        --ccache            \
+        --force-clean       \
+        --repo=winepak-repo \
+        winepak-build       \
+        /sdk/wine/3.8-staging/org.winepak.Platform.Wine.json
+  - |
+    flatpak-builder         \
+        --arch=x86_64       \
+        --ccache            \
+        --force-clean       \
+        --repo=winepak-repo \
+        winepak-build       \
+        /sdk/wine/3.8-staging/org.winepak.Platform.Wine.json
+  - |
+    flatpak build-commit-from                                        \
+        --src-ref=runtime/org.winepak.Platform.Wine/i386/3.8-staging \
+        winepak-repo                                                 \
+        runtime/org.winepak.Platform.Wine.Compat32/x86_64/3.8-staging
