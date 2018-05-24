@@ -29,23 +29,25 @@ jobs:
       - run:
           name: Build org.winepak.Sdk/i386/3.0
           command: |
-              flatpak-builder         \
-                  --arch=i386         \
-                  --ccache            \
-                  --force-clean       \
-                  --repo=winepak-repo \
-                  winepak-build       \
+              flatpak-builder            \
+                  --arch=i386            \
+                  --ccache               \
+                  --force-clean          \
+                  --disable-rofiles-fuse \
+                  --repo=winepak-repo    \
+                  winepak-build          \
                   org.winepak.Sdk.json
 
       - run:
           name: Build org.winepak.Sdk/x86_64/3.0
           command: |
-              flatpak-builder         \
-                  --arch=x86_64       \
-                  --ccache            \
-                  --force-clean       \
-                  --repo=winepak-repo \
-                  winepak-build       \
+              flatpak-builder            \
+                  --arch=x86_64          \
+                  --ccache               \
+                  --force-clean          \
+                  --disable-rofiles-fuse \
+                  --repo=winepak-repo    \
+                  winepak-build          \
                   org.winepak.Sdk.json
 
       - run:
@@ -59,23 +61,25 @@ jobs:
       - run:
           name: Build org.winepak.Platform.Wine/i386/3.8-staging
           command: |
-              flatpak-builder         \
-                  --arch=i386         \
-                  --ccache            \
-                  --force-clean       \
-                  --repo=winepak-repo \
-                  winepak-build       \
+              flatpak-builder            \
+                  --arch=i386            \
+                  --ccache               \
+                  --force-clean          \
+                  --disable-rofiles-fuse \
+                  --repo=winepak-repo    \
+                  winepak-build          \
                   wine/3.8-staging/org.winepak.Platform.Wine.json
 
       - run:
           name: Build org.winepak.Platform.Wine/x86_64/3.8-staging
           command: |
-              flatpak-builder         \
-                  --arch=x86_64       \
-                  --ccache            \
-                  --force-clean       \
-                  --repo=winepak-repo \
-                  winepak-build       \
+              flatpak-builder            \
+                  --arch=x86_64          \
+                  --ccache               \
+                  --force-clean          \
+                  --disable-rofiles-fuse \
+                  --repo=winepak-repo    \
+                  winepak-build          \
                   wine/3.8-staging/org.winepak.Platform.Wine.json
 
       - run:
