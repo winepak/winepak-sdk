@@ -2,12 +2,16 @@ version: 2
 jobs:
   build:
     docker:
-      # https://hub.docker.com/r/flatpak/flatpak-builder/
-      - image: flatpak/flatpak-builder
+      - image: fedora:latest
      
     working_directory: ~/repo
 
     steps:
+      - run:
+          name: Installing flatpak & flatpak-builder
+          command: |
+              dnf -y install flatpak flatpak-builder
+          
       - checkout
       
       - run:
@@ -21,7 +25,7 @@ jobs:
       - run:
           name: Setup winepak repo
           command: |
-              flatpak remote-add \
+              flatpak remote-add  \
                   --if-not-exists \
                   winepak         \
                   winepak-repo
@@ -30,12 +34,12 @@ jobs:
           name: Build org.winepak.Sdk/i386/3.0
           command: |
               flatpak-builder         \
-              --arch=i386         \
-              --ccache            \
-              --force-clean       \
-              --repo=winepak-repo \
-              winepak-build       \
-              org.winepak.Sdk.json
+                  --arch=i386         \
+                  --ccache            \
+                  --force-clean       \
+                  --repo=winepak-repo \
+                  winepak-build       \
+                  org.winepak.Sdk.json
 
       - run:
           name: Build org.winepak.Sdk/x86_64/3.0
