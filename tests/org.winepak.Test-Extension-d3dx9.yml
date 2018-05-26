@@ -1,0 +1,72 @@
+app-id: org.winepak.Test-Extension-d3dx9
+branch: stable
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+command: winepak-test
+
+add-extensions:
+  org.winepak.Platform.Compat32:
+    directory: lib/32bit
+    version: 3.0
+    add-ld-path: lib
+    no-autodownload: false
+    
+  org.winepak.Platform.Extension.d3dx9:
+    directory: lib/extension/d3dx9
+    version: 3.0
+    no-autodownload: false
+
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --device=dri
+  - --allow=multiarch
+
+modules:
+  - name: setup-compat32
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib/32bit
+      - ln -s /app/lib/32bit/lib/ld-linux.so.2 /app/lib/ld-linux.so.2
+
+  - name: setup
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib/extension/d3dx9
+
+  - name: winepak-test
+    buildsystem: simple
+    build-commands:
+      - install -d /app/bin
+      - install winepak-test /app/bin
+    sources:
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: winepak-test
+        commands:
+        - export WINEARCH=win64
+        - export WINEPREFIX="${XDG_DATA_HOME}/wine-${WINEARCH}"
+        - ''
+        - wineboot
+        - ''
+        - source /app/lib/extension/d3dx9/bin/d3dx9-install64
+        - source /app/lib/extension/d3dx9/bin/d3dx9-install64-wow64
+    - type: script
+      only-arches:
+        - i386
+      dest-filename: winepak-test
+      commands:
+        - export WINEARCH=win32
+        - export WINEPREFIX="${XDG_DATA_HOME}/wine-${WINEARCH}"
+        - ''
+        - wineboot
+        - ''
+        - source /app/lib/extension/d3dx9/bin/d3dx9-install32
+
