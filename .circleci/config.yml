@@ -26,53 +26,54 @@ jobs:
           name: Build org.winepak.Sdk/i386/3.0
           command: |
               docker exec -it fb bash -c 'cd /tmp/sdk && flatpak-builder \
-                  --arch=i386         \
-                  --ccache            \
-                  --force-clean       \
-                  --repo=winepak-repo \
-                  winepak-build       \
-                  org.winepak.Sdk.json'
+                  --arch=i386                                            \
+                  --ccache                                               \
+                  --force-clean                                          \
+                  --repo=winepak-repo                                    \
+                  winepak-build                                          \
+                  org.winepak.Sdk.yml'
       - run:
           name: Build org.winepak.Sdk/x86_64/3.0
           command: |
-             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak-builder         \
-                  --arch=x86_64       \
-                  --ccache            \
-                  --force-clean       \
-                  --repo=winepak-repo \
-                  winepak-build       \
-                  org.winepak.Sdk.json'
+             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak-builder \
+                  --arch=x86_64                                         \
+                  --ccache                                              \
+                  --force-clean                                         \
+                  --repo=winepak-repo                                   \
+                  winepak-build                                         \
+                  org.winepak.Sdk.yml'
       - run:
           name: Build org.winepak.Platform.Compat32/x86_64/3.0
           command: |
-             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak build-commit-from                           \
-                  --src-ref=runtime/org.winepak.Platform/i386/3.0 \
-                  winepak-repo                                    \
+             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak build-commit-from \
+                  --src-ref=runtime/org.winepak.Platform/i386/3.0                 \
+                  winepak-repo                                                    \
                   runtime/org.winepak.Platform.Compat32/x86_64/3.0'
       - run:
           name: Build org.winepak.Platform.Wine/i386/3.8-staging
           command: |
-             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak-builder         \
-                  --arch=i386         \
-                  --ccache            \
-                  --force-clean       \
-                  --repo=winepak-repo \
-                  winepak-build       \
-                  wine/3.8-staging/org.winepak.Platform.Wine.json'
+             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak-builder \
+                  --arch=i386                                           \
+                  --ccache                                              \
+                  --force-clean                                         \
+                  --repo=winepak-repo                                   \
+                  winepak-build                                         \
+                  wine/3.8-staging/org.winepak.Platform.Wine.yml'
       - run:
           name: Build org.winepak.Platform.Wine/x86_64/3.8-staging
           command: |
-             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak-builder         \
-                  --arch=x86_64       \
-                  --ccache            \
-                  --force-clean       \
-                  --repo=winepak-repo \
-                  winepak-build       \
-                  wine/3.8-staging/org.winepak.Platform.Wine.json'
+             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak-builder \
+                  --arch=x86_64                                         \
+                  --ccache                                              \
+                  --force-clean                                         \
+                  --repo=winepak-repo                                   \
+                  winepak-build                                         \
+                  wine/3.8-staging/org.winepak.Platform.Wine.yml'
       - run:
           name: Build org.winepak.Platform.Wine.Compat32/x86_64/3.8-staging
           command: |
-             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak build-commit-from                                        \
-                  --src-ref=runtime/org.winepak.Platform.Wine/i386/3.8-staging \
-                  winepak-repo                                                 \
+             docker exec -it fb bash -c 'cd /tmp/sdk && flatpak build-commit-from \
+                  --src-ref=runtime/org.winepak.Platform.Wine/i386/3.8-staging    \
+                  winepak-repo                                                    \
                   runtime/org.winepak.Platform.Wine.Compat32/x86_64/3.8-staging'
+
