@@ -1,7 +1,7 @@
 build-extension: true
 
 id: org.winepak.Platform.Wine
-branch: 3.8-staging
+branch: 3.9-staging
 
 runtime: org.winepak.Platform
 runtime-version: 3.0
@@ -49,11 +49,11 @@ modules:
       - /share/applications
     sources:
       - type: archive
-        url: https://dl.winehq.org/wine/source/3.x/wine-3.8.tar.xz
-        sha256: 02b00c6c948b3bab717e1b1e2075a5406b14d138bd2e01fdb1268a93d1c20d51
+        url: https://dl.winehq.org/wine/source/3.x/wine-3.9.tar.xz
+        sha256: ccadc281966d5a94f1161dec22d29bf7bd6506b371b26f18f652d374e986b735
       - type: archive
-        url: https://github.com/wine-staging/wine-staging/archive/v3.8.tar.gz
-        sha256: fd40c24e00b3da4498f78885a5d3c4a9699790c1de78f6e43ff151432824f2ad
+        url: https://github.com/wine-staging/wine-staging/archive/v3.9.tar.gz
+        sha256: 4e919585aba04654a42290a9ba31fb0b62ec0960d149759d88c86c4ff3778bf8
       - type: shell
         commands:
           - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
@@ -85,11 +85,11 @@ modules:
       - /share/applications
     sources:
       - type: archive
-        url: https://dl.winehq.org/wine/source/3.x/wine-3.8.tar.xz
-        sha256: 02b00c6c948b3bab717e1b1e2075a5406b14d138bd2e01fdb1268a93d1c20d51
+        url: https://dl.winehq.org/wine/source/3.x/wine-3.9.tar.xz
+        sha256: ccadc281966d5a94f1161dec22d29bf7bd6506b371b26f18f652d374e986b735
       - type: archive
-        url: https://github.com/wine-staging/wine-staging/archive/v3.8.tar.gz
-        sha256: fd40c24e00b3da4498f78885a5d3c4a9699790c1de78f6e43ff151432824f2ad
+        url: https://github.com/wine-staging/wine-staging/archive/v3.9.tar.gz
+        sha256: 4e919585aba04654a42290a9ba31fb0b62ec0960d149759d88c86c4ff3778bf8
       - type: shell
         commands:
           - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
