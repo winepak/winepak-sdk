@@ -32,6 +32,7 @@ modules:
       - --disable-tests
       - --with-x
       - --with-ldap
+      - --with-netapi
       - --without-cups
       - --without-curses
       - --without-capi
@@ -39,7 +40,6 @@ modules:
       - --without-gphoto
       - --without-gsm
       - --without-hal
-      - --without-netapi
       - --without-opencl
       - --without-pcap
       - --without-udev
@@ -67,6 +67,7 @@ modules:
       - --disable-tests
       - --with-x
       - --with-ldap
+      - --with-netapi
       - --without-cups
       - --without-curses
       - --without-capi
@@ -74,7 +75,6 @@ modules:
       - --without-gphoto
       - --without-gsm
       - --without-hal
-      - --without-netapi
       - --without-opencl
       - --without-pcap
       - --without-udev
