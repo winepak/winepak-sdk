@@ -1,0 +1,87 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.vcrun2012
+branch: 3.0
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: vcrun2012
+    buildsystem: simple
+    build-commands:
+      - install -d ${FLATPAK_DEST}/bin
+    sources:
+      # https://www.microsoft.com/en-nz/download/details.aspx?id=30679
+      - type: extra-data
+        only-arches:
+          - x86_64
+        url: https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe
+        size: 7186992
+        sha256: 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
+        filename: vcrun2012_x64.exe
+      # https://www.microsoft.com/en-nz/download/details.aspx?id=30679
+      - type: extra-data
+        url: https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x86.exe
+        size: 6554576
+        sha256: b924ad8062eaf4e70437c8be50fa612162795ff0839479546ce907ffa8d6e386
+        filename: vcrun2012_x86.exe
+      
+  - name: scripts
+    buildsystem: simple
+    build-commands:
+      - install vcrun2012-install* ${FLATPAK_DEST}/bin
+    sources:
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: vcrun2012-install64
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - wine64 ${EXTENSION_DIR}/extra/vcrun2012_x64.exe /q
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: vcrun2012-install64-wow64
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - wine ${EXTENSION_DIR}/extra/vcrun2012_x86.exe /q
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: vcrun2012-install32
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - wine ${EXTENSION_DIR}/extra/vcrun2012_x86.exe /q
+      
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.vcrun2012.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.vcrun2012 --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.vcrun2012
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.vcrun2012.metainfo.xml
+

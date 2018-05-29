@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+    <id>org.winepak.Platform.Extension.vcrun2015</id>
+    <extends>org.winepak.Platform.desktop</extends>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>LicenseRef-proprietary</project_license>
+    <name>Visual C++ Redistributable Packages for Visual Studio 2015</name>
+    <summary>Add Visual C++ Redistributable Packages for Visual Studio 2015 support to an application</summary>
+</component>
