@@ -1,0 +1,80 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.msls31
+branch: 3.0
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: msls31
+    buildsystem: simple
+    build-commands:
+      - install -d ${FLATPAK_DEST}/bin
+      - install apply_extra ${FLATPAK_DEST}/bin
+    sources:
+      - type: extra-data
+        url: https://ftp.hp.com/pub/softlib/software/msi/InstMsiW.exe
+        size: 1822848
+        sha256: 4c3516c0b5c2b76b88209b22e3bf1cb82d8e2de7116125e97e128952372eed6b
+        filename: instmsiw.exe
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - mkdir -p dlls
+          - 
+          - cabextract -d dlls -F "*msls31*.dll" instmsiw.exe
+          - 
+          - rm instmsiw.exe
+      
+  - name: scripts
+    buildsystem: simple
+    build-commands:
+      - install msls31-install* ${FLATPAK_DEST}/bin
+    sources:
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: msls31-install64
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          -
+          - echo "Installing msls31.dll..."
+          - cp -f ${EXTENSION_DIR}/extra/dlls/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: msls31-install32
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          -
+          - echo "Installing msls31.dll..."
+          - cp -f ${EXTENSION_DIR}/extra/dlls/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+      
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.msls31.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.msls31 --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.msls31
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.msls31.metainfo.xml
+
