@@ -13,7 +13,7 @@ add-extensions:
     version: 3.0
     add-ld-path: lib
     no-autodownload: false
-    
+
   org.winepak.Platform.Extension.d3dx9:
     directory: lib/extension/d3dx9
     version: 3.0

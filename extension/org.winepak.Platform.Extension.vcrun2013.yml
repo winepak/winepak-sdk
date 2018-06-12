@@ -30,7 +30,7 @@ modules:
         size: 6503984
         sha256: a22895e55b26202eae166838edbe2ea6aad00d7ea600c11f8a31ede5cbce2048
         filename: vcrun2013_x86.exe
-      
+
   - name: scripts
     buildsystem: simple
     build-commands:
@@ -75,7 +75,7 @@ modules:
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
           - ''
           - wine ${EXTENSION_DIR}/extra/vcrun2013_x86.exe /q
-      
+
   - name: metainfo
     buildsystem: simple
     build-commands:

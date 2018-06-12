@@ -1,28 +1,28 @@
 version: 2
 jobs:
   build:
-    machine: true    
+    machine: true
 
     working_directory: ~/repo
 
     steps:
       - checkout
-      
-      - run: 
+
+      - run:
           name: Install flathub SDK
           command: |
               docker run --privileged --volume "${PWD}":/tmp/sdk/ --name fb -it -d flatpak/flatpak-builder:base /bin/bash
               docker exec -it fb bash -c 'flatpak install flathub org.freedesktop.Sdk/i386/1.6 &&
               flatpak install flathub org.freedesktop.Sdk/x86_64/1.6 &&
               flatpak install flathub org.freedesktop.Platform/i386/1.6 &&
-              flatpak install flathub org.freedesktop.Platform/x86_64/1.6'            
+              flatpak install flathub org.freedesktop.Platform/x86_64/1.6'
 
-      - run: 
+      - run:
           name: Setup winepak repo
-          command: |              
+          command: |
               docker exec -it fb bash -c 'cd /tmp/sdk/ && flatpak remote-add --no-gpg-verify winepak winepak-repo'
-                   
-      - run: 
+
+      - run:
           name: Build org.winepak.Sdk/i386/3.0
           command: |
               docker exec -it fb bash -c 'cd /tmp/sdk && flatpak-builder \

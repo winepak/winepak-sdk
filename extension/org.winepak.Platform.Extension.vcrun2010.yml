@@ -30,7 +30,7 @@ modules:
         size: 5073240
         sha256: 8162b2d665ca52884507ede19549e99939ce4ea4a638c537fa653539819138c8
         filename: vcrun2010_x86.exe
-      
+
   - name: scripts
     buildsystem: simple
     build-commands:
@@ -75,7 +75,7 @@ modules:
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
           - ''
           - wine ${EXTENSION_DIR}/extra/vcrun2010_x86.exe /q
-      
+
   - name: metainfo
     buildsystem: simple
     build-commands:
