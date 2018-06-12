@@ -1,0 +1,98 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.dxup
+branch: master
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: dxup
+    buildsystem: simple
+    build-commands:
+      - install -d ${FLATPAK_DEST}/bin/
+      - install -d ${FLATPAK_DEST}/dlls/x86/
+      - install -d ${FLATPAK_DEST}/dlls/x64/
+      - install -D d3dx10_43.x86.dll ${FLATPAK_DEST}/dlls/x86/d3dx10_43.dll
+      - install -D d3dx10_43.x64.dll ${FLATPAK_DEST}/dlls/x64/d3dx10_43.dll
+    sources:
+      - type: file
+        dest-filename: d3dx10_43.x86.dll
+        url: https://github.com/Joshua-Ashton/dxup/raw/master/d3dx10_43/x86/d3dx10_43.dll
+        sha256: 56fcd13650fd1f075743154e8c48465dd68a236ab8960667d75373139d2631bf
+      - type: file
+        dest-filename: d3dx10_43.x64.dll
+        url: https://github.com/Joshua-Ashton/dxup/raw/master/d3dx10_43/x64/d3dx10_43.dll
+        sha256: 9bffa1ea073d79e9954cb398fc91b93ed9dc79ed2205995d4b949f1cc2ad3bd1
+
+  - name: scripts
+    buildsystem: simple
+    build-commands:
+      - install dxup-install* ${FLATPAK_DEST}/bin
+    sources:
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: dxup-install
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x64/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - ''
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.dll}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: dxup-install
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - ''
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x86/*.dll
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.dll}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.dxup.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.dxup --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.dxup
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.dxup.metainfo.xml
