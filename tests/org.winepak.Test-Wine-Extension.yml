@@ -28,7 +28,7 @@ modules:
     buildsystem: simple
     build-commands:
       - mkdir -p /app/lib/wine
-    
+
   - name: winepak-test
     buildsystem: simple
     build-commands:

@@ -15,7 +15,7 @@ finish-args:
   - --share=network
   - --device=dri
   - --allow=multiarch
-  
+
 modules:
   - name: winepak-test
     buildsystem: simple
@@ -32,7 +32,7 @@ modules:
         - wine64 --version
         - echo "Going to attempt to run a 32bit wine:"
         - wine --version
-        
+
     - type: script
       only-arches:
         - i386

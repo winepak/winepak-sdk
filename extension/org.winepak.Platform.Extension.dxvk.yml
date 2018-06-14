@@ -1,0 +1,95 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.dxvk
+branch: 0.54
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: dxvk
+    buildsystem: simple
+    build-commands:
+      - install -d ${FLATPAK_DEST}/bin/
+      - install -d ${FLATPAK_DEST}/dlls/x86/
+      - install -d ${FLATPAK_DEST}/dlls/x64/
+      - install -D x32/d3d11.dll ${FLATPAK_DEST}/dlls/x86/
+      - install -D x64/d3d11.dll ${FLATPAK_DEST}/dlls/x64/
+      - install -D x32/dxgi.dll ${FLATPAK_DEST}/dlls/x86/
+      - install -D x64/dxgi.dll ${FLATPAK_DEST}/dlls/x64/
+    sources:
+      - type: archive
+        url: https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz
+        sha256: 1c2f186baaa01d2de7b832f6f05021bdd29eccb65fc197c8b15adfd4e08f9640
+
+  - name: scripts
+    buildsystem: simple
+    build-commands:
+      - install dxvk-install* ${FLATPAK_DEST}/bin
+    sources:
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: dxvk-install
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x64/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - ''
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.dll}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: dxvk-install
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - ''
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x86/*.dll
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.dll}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.dxvk.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.dxvk --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.dxvk
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.dxvk.metainfo.xml

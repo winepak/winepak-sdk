@@ -13,13 +13,13 @@ add-extensions:
     version: 3.0
     add-ld-path: lib
     no-autodownload: false
-    
+
   org.winepak.Platform.Wine:
     directory: lib/wine
     version: 3.8-staging
     add-ld-path: lib
     no-autodownload: false
-    
+
   org.winepak.Platform.Extension.d3dx9:
     directory: lib/extension/d3dx9
     version: 3.0
@@ -40,17 +40,17 @@ modules:
     build-commands:
       - mkdir -p /app/lib/32bit
       - ln -s /app/lib/32bit/lib/ld-linux.so.2 /app/lib/ld-linux.so.2
-      
+
   - name: setup-wine
     buildsystem: simple
     build-commands:
       - mkdir -p /app/lib/wine
-    
+
   - name: setup-wine-compat32
     buildsystem: simple
     build-commands:
       - mkdir -p /app/lib/wine-32bit
-    
+
   - name: winepak-test
     buildsystem: simple
     build-commands:

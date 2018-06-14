@@ -17,7 +17,7 @@ add-extensions:
     subdirectories: false
     autodelete: false
     no-autodownload: false
-    
+
   org.winepak.Platform.Wine:
     directory: lib/wine
     version: 3.0
@@ -25,21 +25,21 @@ add-extensions:
     add-ld-path: lib
     subdirectories: false
     autodelete: false
-    
+
   org.winepak.Platform.Extension:
     directory: lib/extension
     version: 3.0
     subdirectories: true
     autodelete: true
     no-autodownload: true
-    
+
   org.winepak.Sdk.Extension:
     directory: lib/sdk
     version: 3.0
     subdirectories: true
     autodelete: true
     no-autodownload: true
-    
+
 platform-extensions:
   - org.freedesktop.Platform.Locale
 
@@ -65,19 +65,19 @@ cleanup:
 
 cleanup-commands:
   # Important for Compat32/32bit/WoW64!
-  # 
-  # The `/usr/libexec/freedesktop-post.sh` is a special script for setting-up 
-  # multiple tweaks to a runtime. It's espically critical for winepak as it 
+  #
+  # The `/usr/libexec/freedesktop-post.sh` is a special script for setting-up
+  # multiple tweaks to a runtime. It's espically critical for winepak as it
   # sets-up a `/lib/ld-linux.so.2` symlink to `/app/lib/ld-linux.so.2`.
-  # `org.freedesktop.Platform//1.6` creates a number of symlinks in 
-  # `/usr/lib/extra-links`. This scripts copies those to `/usr/lib` at the end 
-  # of the build process (aka this section). If this is not done then binaries 
-  # and libraries looking for the 32bit linker (a.k.a `/lib/ld-linux.so.2`) in 
+  # `org.freedesktop.Platform//1.6` creates a number of symlinks in
+  # `/usr/lib/extra-links`. This scripts copies those to `/usr/lib` at the end
+  # of the build process (aka this section). If this is not done then binaries
+  # and libraries looking for the 32bit linker (a.k.a `/lib/ld-linux.so.2`) in
   # a 64bit enviroment won't find what it needs and return an error like
   #
   #     sh /path/to/bin/program No such file or directory
   #
-  # `org.freedesktop.Platform//1.8` should make this obsolote, but till then 
+  # `org.freedesktop.Platform//1.8` should make this obsolote, but till then
   # it's critical for winepak to work.
   - /usr/libexec/freedesktop-post.sh
 
@@ -87,21 +87,21 @@ cleanup-platform:
   - /share/pkgconfig
   - /lib/pkgconfig
 
-cleanup-platform-commands: 
+cleanup-platform-commands:
   # Important for Compat32/32bit/WoW64!
-  # 
-  # The `/usr/libexec/freedesktop-post.sh` is a special script for setting-up 
-  # multiple tweaks to a runtime. It's espically critical for winepak as it 
+  #
+  # The `/usr/libexec/freedesktop-post.sh` is a special script for setting-up
+  # multiple tweaks to a runtime. It's espically critical for winepak as it
   # sets-up a `/lib/ld-linux.so.2` symlink to `/app/lib/ld-linux.so.2`.
-  # `org.freedesktop.Platform//1.6` creates a number of symlinks in 
-  # `/usr/lib/extra-links`. This scripts copies those to `/usr/lib` at the end 
-  # of the build process (aka this section). If this is not done then binaries 
-  # and libraries looking for the 32bit linker (a.k.a `/lib/ld-linux.so.2`) in 
+  # `org.freedesktop.Platform//1.6` creates a number of symlinks in
+  # `/usr/lib/extra-links`. This scripts copies those to `/usr/lib` at the end
+  # of the build process (aka this section). If this is not done then binaries
+  # and libraries looking for the 32bit linker (a.k.a `/lib/ld-linux.so.2`) in
   # a 64bit enviroment won't find what it needs and return an error like
   #
   #     sh /path/to/bin/program No such file or directory
   #
-  # `org.freedesktop.Platform//1.8` should make this obsolote, but till then 
+  # `org.freedesktop.Platform//1.8` should make this obsolote, but till then
   # it's critical for winepak to work.
   - /usr/libexec/freedesktop-post.sh
 
@@ -111,7 +111,7 @@ build-options:
   ldflags: -fstack-protector-strong -Wl,-z,relro,-z,now
   env:
     V: '1'
-    
+
 modules:
   - name: platform-setup
     buildsystem: simple
@@ -145,7 +145,7 @@ modules:
           - LIBSO_LIBS=-lpthread
         sources:
             # Bereley DB required for OpenLDAP
-            # Due to licencing v6.* will not work with later versions of OpenLDAP 
+            # Due to licencing v6.* will not work with later versions of OpenLDAP
             # and for that matter a lot of other software. Stick to v5.3.28
             # http://www.oracle.com/technetwork/products/berkeleydb/downloads/index-082944.html
           - type: archive
