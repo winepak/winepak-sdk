@@ -71,14 +71,14 @@ modules:
         dest-filename: apply_extra
         commands:
           - mkdir -p fonts
-          - 
+          -
           - for font in *.exe
           - do
           -     cabextract -d fonts -L ${font}
           - done
-          - 
+          -
           - rm fonts/*.inf
-      
+
   - name: scripts
     buildsystem: simple
     build-commands:
@@ -93,12 +93,12 @@ modules:
           - '    echo "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
-          - 
+          -
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - 
+          -
           - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/Fonts/"
           - cp ${EXTENSION_DIR}/extra/fonts/*.ttf "${WINEPREFIX}/dosdevices/c:/windows/Fonts/"
-          - 
+          -
           - for ttf in ${EXTENSION_DIR}/extra/fonts/*.ttf
           - do
           - '    filename=${ttf##*/}'
@@ -118,7 +118,7 @@ modules:
           - '        wine64 reg add ''HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Fonts'' /v "${fontname}" /d "${filename}" /f'
           - '    done'
           - done
-      
+
       - type: script
         only-arches:
           - i386
@@ -128,12 +128,12 @@ modules:
           - '    echo "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
-          - 
+          -
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - 
+          -
           - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/Fonts/"
           - cp ${EXTENSION_DIR}/extra/fonts/*.ttf "${WINEPREFIX}/dosdevices/c:/windows/Fonts/"
-          - 
+          -
           - for ttf in ${EXTENSION_DIR}/extra/fonts/*.ttf
           - do
           - '    filename=${ttf##*/}'
@@ -153,7 +153,7 @@ modules:
           - '        wine reg add ''HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Fonts'' /v "${fontname}" /d "${filename}" /f'
           - '    done'
           - done
-        
+
   - name: metainfo
     buildsystem: simple
     build-commands:

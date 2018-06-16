@@ -13,7 +13,7 @@ add-extensions:
     version: 3.0
     add-ld-path: lib
     no-autodownload: false
-    
+
   org.winepak.Platform.Extension.corefonts:
     directory: lib/extension/corefonts
     version: 3.0
@@ -27,19 +27,19 @@ finish-args:
   - --share=network
   - --device=dri
   - --allow=multiarch
-  
+
 modules:
   - name: setup-compat32
     buildsystem: simple
     build-commands:
       - mkdir -p /app/lib/32bit
       - ln -s /app/lib/32bit/lib/ld-linux.so.2 /app/lib/ld-linux.so.2
-      
+
   - name: setup
     buildsystem: simple
     build-commands:
       - mkdir -p /app/lib/extension/corefonts
-      
+
   - name: winepak-test
     buildsystem: simple
     build-commands:

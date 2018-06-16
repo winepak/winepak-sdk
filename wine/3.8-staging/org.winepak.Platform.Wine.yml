@@ -13,7 +13,7 @@ appstream-compose: false
 cleanup:
   - /man
   - /share/man
-  
+
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
   cxxflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -21,7 +21,7 @@ build-options:
   prefix: "${FLATPAK_DEST}"
   env:
     V: '1'
-    
+
 modules:
   - name: wine-staging-win64
     only-arches:
@@ -57,7 +57,7 @@ modules:
       - type: shell
         commands:
           - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
-      
+
   - name: wine-staging-win32
     only-arches:
       - i386
@@ -93,7 +93,7 @@ modules:
       - type: shell
         commands:
           - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
-      
+
   - name: metainfo
     buildsystem: simple
     build-commands:

@@ -26,11 +26,11 @@ modules:
         dest-filename: apply_extra
         commands:
           - mkdir -p dlls
-          - 
+          -
           - cabextract -d dlls -F "*msls31*.dll" instmsiw.exe
-          - 
+          -
           - rm instmsiw.exe
-      
+
   - name: scripts
     buildsystem: simple
     build-commands:
@@ -47,7 +47,7 @@ modules:
           - fi
           - ''
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - 
+          -
           - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
           -
           - echo "Installing msls31.dll..."
@@ -63,12 +63,12 @@ modules:
           - fi
           - ''
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - 
+          -
           - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
           -
           - echo "Installing msls31.dll..."
           - cp -f ${EXTENSION_DIR}/extra/dlls/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
-      
+
   - name: metainfo
     buildsystem: simple
     build-commands:

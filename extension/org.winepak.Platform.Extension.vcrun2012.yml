@@ -30,7 +30,7 @@ modules:
         size: 6554576
         sha256: b924ad8062eaf4e70437c8be50fa612162795ff0839479546ce907ffa8d6e386
         filename: vcrun2012_x86.exe
-      
+
   - name: scripts
     buildsystem: simple
     build-commands:
@@ -75,7 +75,7 @@ modules:
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
           - ''
           - wine ${EXTENSION_DIR}/extra/vcrun2012_x86.exe /q
-      
+
   - name: metainfo
     buildsystem: simple
     build-commands:
