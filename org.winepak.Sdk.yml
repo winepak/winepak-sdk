@@ -57,7 +57,11 @@ modules:
   - name: wine-win64
     only-arches:
       - x86_64
+    make-install-args:
+      - libdir=/usr/lib
+      - dlldir=/usr/lib/wine
     config-opts:
+      - --libdir=/usr/lib
       - --enable-win64
       - --disable-win16
       - --disable-tests
@@ -86,7 +90,11 @@ modules:
   - name: wine-win32
     only-arches:
       - i386
+    make-install-args:
+      - libdir=/usr/lib
+      - dlldir=/usr/lib/wine
     config-opts:
+      - --libdir=/usr/lib
       - --disable-win64
       - --disable-win16
       - --disable-tests
