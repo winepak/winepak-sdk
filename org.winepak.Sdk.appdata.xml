@@ -2,8 +2,8 @@
 <component type="runtime">
     <id>org.winepak.Sdk</id>
     <metadata_license>CC0</metadata_license>
-    <name>Winepak Software Development Kit</name>
-    <summary>Tools and headers for developing Winepak applications</summary>
-    <project_group>Winepak</project_group>
-    <url type="homepage">https://github.com/winepak</url>
+    <name>winepak Software Development Kit</name>
+    <summary>Tools and headers for developing winepak applications</summary>
+    <project_group>winepak</project_group>
+    <url type="homepage">https://www.winepak.org</url>
 </component>
