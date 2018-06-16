@@ -4,6 +4,7 @@ id: org.winepak.Sdk
 id-platform: org.winepak.Platform
 branch: 3.0
 
+<<<<<<< HEAD
 runtime: org.freedesktop.Platform
 runtime-version: 18.08
 sdk: org.freedesktop.Sdk
@@ -25,6 +26,13 @@ inherit-extensions:
   - org.freedesktop.Platform.GStreamer
   - org.freedesktop.Platform.VAAPI.Intel
 
+=======
+runtime: org.winepak.BasePlatform
+runtime-version: 3.0
+sdk: org.winepak.BaseSdk
+
+<<<<<<< HEAD
+>>>>>>> [WIP] Redesign Platform & Sdk
 add-extensions:
   org.winepak.Sdk.Docs:
     directory: share/runtime/docs
@@ -85,6 +93,7 @@ add-extensions:
     autodelete: true
     add-ld-path: .
 
+<<<<<<< HEAD
   org.winepak.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
     version: 3.0
@@ -101,12 +110,34 @@ add-extensions:
     merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
     download-if: active-gl-driver
     enable-if: active-gl-driver
+=======
+platform-extensions:
+  - org.freedesktop.Platform.Locale
+=======
+sdk-extensions:
+  - org.winepak.BaseSdk.Debug
+  - org.winepak.BaseSdk.Locale
+  - org.winepak.BaseSdk.Docs
+>>>>>>> [WIP] Redesign Platform & Sdk
+
+inherit-extensions:
+  - org.winepak.BaseSdk.Docs
+  - org.winepak.BaseSdk.Extension
+  - org.winepak.BasePlatform.Compat.i386
+  - org.winepak.BasePlatform.Gecko
+  - org.winepak.BasePlatform.Mono
+  - org.winepak.BasePlatform.Extension
+>>>>>>> [WIP] Redesign Platform & Sdk
 
 finish-args:
   - --sdk=org.winepak.Sdk//3.0
   - --runtime=org.winepak.Platform//3.0
   - --allow=multiarch
+<<<<<<< HEAD
   - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/wine/bin
+=======
+  - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/bin
+>>>>>>> [WIP] Redesign Platform & Sdk
   - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share
   - --env=WINEDEBUG=-all
   - --env=WINEPREFIX=/var/data/wine
@@ -117,12 +148,16 @@ cleanup:
   - /share/man
 
 cleanup-commands:
+<<<<<<< HEAD
   - sh -x /usr/libexec/freedesktop-post.sh
   - |
     if [ -L /usr/lib/i386-linux-gnu ]; then
       rm /usr/lib/i386-linux-gnu
       mkdir -p /usr/lib/i386-linux-gnu
     fi
+=======
+  - /usr/libexec/freedesktop-post.sh
+>>>>>>> [WIP] Redesign Platform & Sdk
 
 cleanup-platform:
   - /docs
@@ -132,12 +167,16 @@ cleanup-platform:
   - /lib/pkgconfig
 
 cleanup-platform-commands:
+<<<<<<< HEAD
   - sh -x /usr/libexec/freedesktop-post.sh
   - |
     if [ -L /usr/lib/i386-linux-gnu ]; then
       rm /usr/lib/i386-linux-gnu
       mkdir -p /usr/lib/i386-linux-gnu
     fi
+=======
+  - /usr/libexec/freedesktop-post.sh
+>>>>>>> [WIP] Redesign Platform & Sdk
 
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -147,6 +186,7 @@ build-options:
     V: '1'
 
 modules:
+<<<<<<< HEAD
   - name: platform-setup
     buildsystem: simple
     build-commands:
@@ -186,6 +226,8 @@ modules:
         url: https://www.rarlab.com/rar/unrarsrc-5.6.4.tar.gz
         sha256: 9335d2201870f2034007c04be80e00f1dc23932cb88b329d55c76134e6ba49fe
 
+=======
+>>>>>>> [WIP] Redesign Platform & Sdk
   - name: wine-win64
     only-arches:
       - x86_64
@@ -248,6 +290,7 @@ modules:
       - /share/applications
     sources:
       - type: archive
+<<<<<<< HEAD
         url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
         sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
     post-install:
@@ -262,6 +305,10 @@ modules:
           mv $i /usr/lib/i386-linux-gnu/wine/bin
           ln -s "/usr/lib/i386-linux-gnu/wine/bin/$(basename $i)" $i
         done
+=======
+        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.1.tar.xz
+        sha256: bad00d7ddac6652795a2ed52ce02a544ff4e891499b29ac71d28d20b8e1d26f3
+>>>>>>> [WIP] Redesign Platform & Sdk
 
   - name: metainfo
     buildsystem: simple
