@@ -47,12 +47,12 @@ modules:
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
           - ''
           - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
-          - cp ${EXTENSION_DIR}/extra/dlls/x64/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/dlls/x64/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
           - ''
           - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
-          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - cp ${EXTENSION_DIR}/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
           - ''
-          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - for dll in ${EXTENSION_DIR}/dlls/x64/*.dll
           - do
           - '   filename=${dll##*/}'
           - '   name=${filename%.dll}'
@@ -75,9 +75,9 @@ modules:
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
           - ''
           - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
-          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
           - ''
-          - for dll in ${EXTENSION_DIR}/extra/dlls/x86/*.dll
+          - for dll in ${EXTENSION_DIR}/dlls/x86/*.dll
           - do
           - '   filename=${dll##*/}'
           - '   name=${filename%.dll}'
