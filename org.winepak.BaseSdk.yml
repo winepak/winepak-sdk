@@ -119,10 +119,14 @@ modules:
     build-commands:
       - mkdir -p /usr/share/runtime/docs
       - mkdir -p /usr/lib/sdk
-      - mkdir -p /usr/lib/i386-linux-gnu
-      - mkdir -p /usr/lib/gecko
-      - mkdir -p /usr/lib/wine
       - mkdir -p /usr/lib/extension
+      - mkdir -p /usr/lib/gecko
+      - mkdir -p /usr/share/wine/gecko
+      - ln -s /usr/lib/gecko /usr/share/wine/gecko
+      - mkdir -p /usr/lib/mono
+      - mkdir -p /usr/share/wine/mono
+      - ln -s /usr/lib/mono /usr/share/wine/mono
+      - mkdir -p /usr/lib/i386-linux-gnu
 
   - name: openldap
     config-opts:
