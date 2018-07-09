@@ -27,15 +27,6 @@ add-extensions:
     autodelete: true
     no-autodownload: true
 
-  org.winepak.BasePlatform.Compat.i386:
-    directory: lib/i386-linux-gnu
-    version: 3.0
-    versions: 3.0
-    add-ld-path: lib
-    subdirectories: false
-    autodelete: false
-    no-autodownload: false
-
   org.winepak.BasePlatform.Gecko:
     directory: lib/gecko
     version: 3.0
@@ -57,15 +48,36 @@ add-extensions:
     autodelete: true
     no-autodownload: true
 
+  org.winepak.BasePlatform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: 3.0
+    versions: 3.0
+    add-ld-path: lib
+    subdirectories: false
+    autodelete: false
+    no-autodownload: false
+
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/lib/GL
+    version: 1.4
+    versions: 1.6;1.4
+    add-ld-path: lib
+    subdirectories: true
+    autodelete: false
+    no-autodownload: true
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+
 platform-extensions:
   - org.freedesktop.Platform.Locale
 
 inherit-extensions:
+  - org.freedesktop.Sdk.Extension
   - org.freedesktop.Platform.GL
   - org.freedesktop.Platform.Timezones
   - org.freedesktop.Platform.GStreamer
   - org.freedesktop.Platform.VAAPI.Intel
-  - org.freedesktop.Sdk.Extension
 
 finish-args:
   - --sdk=org.winepak.BaseSdk//3.0
