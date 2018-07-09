@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+    <id>org.winepak.Platform.Mono</id>
+    <metadata_license>CC0-1.0</metadata_license>
+    <name>Wine Mono Support</name>
+    <summary>Add support for Wine Mono</summary>
+</component>
