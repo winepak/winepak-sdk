@@ -18,6 +18,18 @@ add-extensions:
     autodelete: false
     no-autodownload: false
 
+  org.freedesktop.Platform.GL32:
+    directory: lib/32bit/lib/GL
+    version: 1.4
+    versions: 1.6;1.4
+    subdirectories: true
+    no-autodownload: true
+    autodelete: false
+    add-ld-path: lib
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+
   org.winepak.Platform.Wine:
     directory: lib/wine
     version: 3.0
