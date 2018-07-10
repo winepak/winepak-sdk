@@ -1,7 +1,7 @@
 build-extension: true
 
 app-id: org.winepak.Platform.Mono
-branch: stable
+branch: 3.0
 
 runtime: org.winepak.Platform
 runtime-version: 3.0
@@ -23,10 +23,10 @@ modules:
   - name: metainfo
     buildsystem: simple
     build-commands:
-      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Mono.metainfo.xml
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/appdata org.winepak.Platform.Mono.appdata.xml
       - appstream-compose --basename=org.winepak.Platform.Mono --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Mono
 
     sources:
       - type: file
-        path: org.winepak.Platform.Mono.metainfo.xml
+        path: org.winepak.Platform.Mono.appdata.xml
 
