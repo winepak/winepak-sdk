@@ -1,0 +1,306 @@
+build-runtime: true
+
+id: org.winepak.Sdk
+id-platform: org.winepak.Platform
+branch: 3.10-staging
+
+runtime: org.freedesktop.Platform
+runtime-version: 1.6
+sdk: org.freedesktop.Sdk
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Debug
+  - org.freedesktop.Sdk.Locale
+  - org.freedesktop.Sdk.Docs
+
+add-extensions:
+  org.winepak.Sdk.Docs:
+    directory: share/runtime/docs
+    bundle: true
+    autodelete: true
+    no-autodownload: true
+
+  org.winepak.Sdk.Extension:
+    directory: lib/sdk
+    version: 3.0
+    subdirectories: true
+    autodelete: true
+    no-autodownload: true
+
+  org.winepak.Platform.Gecko:
+    directory: lib/gecko
+    version: 3.0
+    versions: 3.0
+    subdirectories: false
+    autodelete: false
+    no-autodownload: false
+
+  org.winepak.Platform.Mono:
+    directory: lib/mono
+    version: 3.0
+    versions: 3.0
+    subdirectories: false
+    autodelete: false
+    no-autodownload: false
+
+  org.winepak.Platform.Extension:
+    directory: lib/extension
+    version: 3.0
+    subdirectories: true
+    autodelete: true
+    no-autodownload: true
+
+  org.winepak.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: 3.10-staging
+    versions: 3.10-staging
+    add-ld-path: lib
+    subdirectories: false
+    autodelete: false
+    no-autodownload: false
+
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/lib/GL
+    version: 1.4
+    versions: 1.6;1.4
+    add-ld-path: lib
+    subdirectories: true
+    autodelete: false
+    no-autodownload: true
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+
+platform-extensions:
+  - org.freedesktop.Platform.Locale
+
+inherit-extensions:
+  - org.freedesktop.Sdk.Extension
+  - org.freedesktop.Platform.GL
+  - org.freedesktop.Platform.Timezones
+  - org.freedesktop.Platform.GStreamer
+  - org.freedesktop.Platform.VAAPI.Intel
+
+finish-args:
+  - --sdk=org.winepak.Sdk//3.10-staging
+  - --runtime=org.winepak.Platform//3.10-staging
+  - --allow=multiarch
+  - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/bin
+  - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share
+  - --env=WINEDEBUG=-all
+  - --env=WINEPREFIX=/var/data/wine
+
+cleanup:
+  - /docs
+  - /man
+  - /share/man
+
+cleanup-commands:
+  - /usr/libexec/freedesktop-post.sh
+
+cleanup-platform:
+  - /docs
+  - /include
+  - /share/aclocal
+  - /share/pkgconfig
+  - /lib/pkgconfig
+
+cleanup-platform-commands:
+  - /usr/libexec/freedesktop-post.sh
+
+build-options:
+  cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  cxxflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  ldflags: -fstack-protector-strong -Wl,-z,relro,-z,now
+  env:
+    V: '1'
+
+modules:
+  - name: platform-setup
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /usr/share/runtime/docs
+      - mkdir -p /usr/lib/sdk
+      - mkdir -p /usr/lib/extension
+      - mkdir -p /usr/lib/gecko
+      - mkdir -p /usr/lib/mono
+      - mkdir -p /usr/lib/i386-linux-gnu
+
+  - name: openldap
+    config-opts:
+      - --disable-static
+    sources:
+      # OpenLDAP required for Wine
+      # Due to the licencing of BDB v6.* we must stick with OpenLDAP 2.4.46
+      # FTP isn't support in flatpak & flatpak-builder so we use he https mirror
+      # https://www.openldap.org/software/download/OpenLDAP/openldap-release/
+      - type: archive
+        url: https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.46.tgz
+        sha256: 9a90dcb86b99ae790ccab93b7585a31fbcbeec8c94bf0f7ab0ca0a87ea0c4b2d
+    modules:
+      - name: BDB
+        config-opts:
+          - --enable-compat185
+          - --enable-shared
+          - --enable-static
+          - --enable-cxx
+          - --enable-dbm
+          - --enable-stl
+        make-install-args:
+          - LIBSO_LIBS=-lpthread
+        sources:
+            # Bereley DB required for OpenLDAP
+            # Due to licencing v6.* will not work with later versions of OpenLDAP
+            # and for that matter a lot of other software. Stick to v5.3.28
+            # http://www.oracle.com/technetwork/products/berkeleydb/downloads/index-082944.html
+          - type: archive
+            url: http://download.oracle.com/berkeley-db/db-5.3.28.tar.gz
+            sha256: e0a992d740709892e81f9d93f06daf305cf73fb81b545afe72478043172c3628
+          - type: script
+            dest-filename: configure
+            commands:
+            - "./dist/configure $@"
+
+  - name: cabextract
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://www.cabextract.org.uk/cabextract-1.6.tar.gz
+        sha256: cee661b56555350d26943c5e127fc75dd290b7f75689d5ebc1f04957c4af55fb
+
+  - name: unrar
+    buildsystem: simple
+    build-commands:
+      - make
+      - make install
+    sources:
+      - type: archive
+        url: https://www.rarlab.com/rar/unrarsrc-5.6.4.tar.gz
+        sha256: 9335d2201870f2034007c04be80e00f1dc23932cb88b329d55c76134e6ba49fe
+
+  - name: wine-win64
+    only-arches:
+      - x86_64
+    make-install-args:
+      - libdir=/usr/lib
+      - dlldir=/usr/lib/wine
+    config-opts:
+      - --libdir=/usr/lib
+      - --enable-win64
+      - --disable-win16
+      - --disable-tests
+      - --with-x
+      - --with-ldap
+      - --without-cups
+      - --without-curses
+      - --without-capi
+      - --without-glu
+      - --without-gphoto
+      - --without-gsm
+      - --without-hal
+      - --without-netapi
+      - --without-opencl
+      - --without-pcap
+      - --without-udev
+      - --without-v4l
+    cleanup:
+      - /share/man
+      - /share/applications
+    post-install:
+      - rm -rf /usr/share/wine/gecko
+      - ln -s /usr/lib/gecko /usr/share/wine/gecko
+      - rm -rf /usr/share/wine/mono
+      - ln -s /usr/lib/mono /usr/share/wine/mono
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/3.x/wine-3.10.tar.xz
+        sha256: d7505cc79c7cd8950f1a46ecfcc0ae2ecc71717ce85414846264395b1e7ac6b5
+      - type: archive
+        url: https://github.com/wine-staging/wine-staging/archive/v3.10.tar.gz
+        sha256: 3f44f24dab0d59e08a2395960756a65485f0f5201dde2f8381d680ff235cf22d
+      - type: shell
+        commands:
+          - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
+
+  - name: wine-win32
+    only-arches:
+      - i386
+    make-install-args:
+      - libdir=/usr/lib
+      - dlldir=/usr/lib/wine
+    config-opts:
+      - --libdir=/usr/lib
+      - --disable-win64
+      - --disable-win16
+      - --disable-tests
+      - --with-x
+      - --with-ldap
+      - --without-cups
+      - --without-curses
+      - --without-capi
+      - --without-glu
+      - --without-gphoto
+      - --without-gsm
+      - --without-hal
+      - --without-netapi
+      - --without-opencl
+      - --without-pcap
+      - --without-udev
+      - --without-v4l
+    cleanup:
+      - /bin/function_grep.pl
+      - /include
+      - /share/man
+      - /share/applications
+    post-install:
+      - rm -rf /usr/share/wine/gecko
+      - ln -s /usr/lib/gecko /usr/share/wine/gecko
+      - rm -rf /usr/share/wine/mono
+      - ln -s /usr/lib/mono /usr/share/wine/mono
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/3.x/wine-3.10.tar.xz
+        sha256: d7505cc79c7cd8950f1a46ecfcc0ae2ecc71717ce85414846264395b1e7ac6b5
+      - type: archive
+        url: https://github.com/wine-staging/wine-staging/archive/v3.10.tar.gz
+        sha256: 3f44f24dab0d59e08a2395960756a65485f0f5201dde2f8381d680ff235cf22d
+      - type: shell
+        commands:
+          - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
+
+  # Override i386 symlink for /usr/lib/ld-linux.so.2
+  # In general we don't want to override things from the freedesktop Sdk and 
+  # Platform but, consider winepak solves a unique case we'll make an exception.
+  # 
+  # Normal /usr/lib/ld-linux.so.2 is installed by coping a special ld-linux.so.2
+  # from /usr/lib/extra-links/*. The ld-linux.so.2 found in that directory is a 
+  # symlink to /app/lib/ld-linux.so.2 which we then override in each application.
+  #
+  # wine64 is basically worthless without wine32 so we load our own Compat.i386 
+  # extension in the runtime and point /usr/lib/ld-linux.so.2 to our own mount 
+  # point at /usr/lib/i386-linux-gnu/lib/ld-linux.so.2
+  - name: lib32-i386-symlink
+    only-arches:
+      - x86_64
+    buildsystem: simple
+    build-commands: []
+    sources:
+      - type: shell
+        commands:
+          - mkdir -p /usr/lib/extra-links
+          - ln -s -f /usr/lib/i386-linux-gnu/lib/ld-linux.so.2 /usr/lib/extra-links/ld-linux.so.2
+
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /usr/share/appdata
+      - install org.winepak.Platform.appdata.xml /usr/share/appdata
+      - install org.winepak.Sdk.appdata.xml /usr/share/appdata
+      - appstream-compose --basename=org.winepak.Platform --prefix=/usr --origin=flatpak org.winepak.Platform
+      - appstream-compose --basename=org.winepak.Sdk --prefix=/usr --origin=flatpak org.winepak.Sdk
+    sources:
+      - type: file
+        path: org.winepak.Sdk.appdata.xml
+      - type: file
+        path: org.winepak.Platform.appdata.xml
+
