@@ -15,6 +15,8 @@ modules:
     buildsystem: simple
     build-commands:
       - install -d ${FLATPAK_DEST}/bin
+      - install apply_extra* ${FLATPAK_DEST}/bin
+      - install apply_extra ${FLATPAK_DEST}/bin
     sources:
       # https://www.microsoft.com/en-us/download/details.aspx?id=40784
       - type: extra-data
@@ -23,13 +25,104 @@ modules:
         url: https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe
         size: 7194312
         sha256: e554425243e3e8ca1cd5fe550db41e6fa58a007c74fad400274b128452f38fb8
-        filename: vcrun2013_x64.exe
+        filename: vc_redist.x64.exe
       # https://www.microsoft.com/en-us/download/details.aspx?id=40784
       - type: extra-data
         url: https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe
         size: 6503984
         sha256: a22895e55b26202eae166838edbe2ea6aad00d7ea600c11f8a31ede5cbce2048
-        filename: vcrun2013_x86.exe
+        filename: vc_redist.x86.exe
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: apply_extra
+        commands:
+          - /app/bin/apply_extra64
+          - /app/bin/apply_extra32
+          - 
+          - rm -rf extracted
+          - rm -rf extracted_dlls
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: apply_extra
+        commands:
+          - /app/bin/apply_extra32
+          - 
+          - rm -rf extracted
+          - rm -rf extracted_dlls
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: apply_extra64
+        commands:
+          - OPERATION="vcrun2013"
+          - ARCH="x64"
+          - SOURCE_FILE="vc_redist.x64.exe"
+          - DIR_EXTRACTED="extracted/${ARCH}"
+          - DIR_EXTRACTED_DLLS="extracted_dlls/${ARCH}"
+          - DIR_DLLS="dlls/${ARCH}"
+          - 
+          - mkdir -p $DIR_EXTRACTED
+          - mkdir -p $DIR_EXTRACTED_DLLS
+          - mkdir -p $DIR_DLLS
+          - 
+          - echo "${OPERATION} (${ARCH}): Extracting redistributable"
+          - cabextract -q -d $DIR_EXTRACTED -L $SOURCE_FILE
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a2
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a3
+          - 
+          - # Grab the DLLs we need and correct naming
+          - echo "${OPERATION} (${ARCH}): Saving and renaming the correct DLLs"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_mfc120_x64" "${DIR_DLLS}/mfc120.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_mfc120u_x64" "${DIR_DLLS}/mfc120u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_mfcm120_x64" "${DIR_DLLS}/mfcm12.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_mfcm120u_x64" "${DIR_DLLS}/mfcm120u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_msvcp120_x64" "${DIR_DLLS}/msvcp120.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_msvcr120_x64" "${DIR_DLLS}/msvcr120.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_vcomp120_x64" "${DIR_DLLS}/vcomp120.dll"
+          - 
+          - # Clean-up
+          - echo "${OPERATION} (${ARCH}): Cleaning-up"
+          - rm -rf $DIR_EXTRACTED
+          - rm -rf $DIR_EXTRACTED_DLLS
+          - rm $SOURCE_FILE
+      - type: script
+        dest-filename: apply_extra32
+        commands:
+          - OPERATION="vcrun2013"
+          - ARCH="x86"
+          - SOURCE_FILE="vc_redist.x86.exe"
+          - DIR_EXTRACTED="extracted/${ARCH}"
+          - DIR_EXTRACTED_DLLS="extracted_dlls/${ARCH}"
+          - DIR_DLLS="dlls/${ARCH}"
+          - 
+          - mkdir -p $DIR_EXTRACTED
+          - mkdir -p $DIR_EXTRACTED_DLLS
+          - mkdir -p $DIR_DLLS
+          - 
+          - echo "${OPERATION} (${ARCH}): Extracting redistributable"
+          - cabextract -q -d $DIR_EXTRACTED -L $SOURCE_FILE
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a2
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a3
+          - 
+          - # Grab the DLLs we need and correct naming
+          - echo "${OPERATION} (${ARCH}): Saving and renaming the correct DLLs"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_mfc120_x86" "${DIR_DLLS}/mfc120.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_mfc120u_x86" "${DIR_DLLS}/mfc120u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_mfcm120_x86" "${DIR_DLLS}/mfcm12.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_mfcm120u_x86" "${DIR_DLLS}/mfcm120u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_msvcp120_x86" "${DIR_DLLS}/msvcp120.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_msvcr120_x86" "${DIR_DLLS}/msvcr120.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_vcamp120_x86" "${DIR_DLLS}/vcamp120.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_vccorlib120_x86" "${DIR_DLLS}/vccorlib120.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/f_central_vcomp120_x86" "${DIR_DLLS}/vcomp120.dll"
+          - 
+          - # Clean-up
+          - echo "${OPERATION} (${ARCH}): Cleaning-up"
+          - rm -rf $DIR_EXTRACTED
+          - rm -rf $DIR_EXTRACTED_DLLS
+          - rm $SOURCE_FILE
 
   - name: scripts
     buildsystem: simple
@@ -45,23 +138,47 @@ modules:
           - '    echo "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
-          - ''
+          - 
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - ''
-          - wine64 ${EXTENSION_DIR}/extra/vcrun2013_x64.exe /q
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x64/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
       - type: script
         only-arches:
           - x86_64
         dest-filename: vcrun2013-install64-wow64
         commands:
           - if [ -z "$WINEPREFIX" ] ; then
-          - '    echo "No wine prefix set or is empty, abort."'
+          - '    "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
-          - ''
+          - 
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - ''
-          - wine ${EXTENSION_DIR}/extra/vcrun2013_x86.exe /q
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
       - type: script
         only-arches:
           - i386
@@ -71,10 +188,22 @@ modules:
           - '    "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
-          - ''
+          - 
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - ''
-          - wine ${EXTENSION_DIR}/extra/vcrun2013_x86.exe /q
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
 
   - name: metainfo
     buildsystem: simple
