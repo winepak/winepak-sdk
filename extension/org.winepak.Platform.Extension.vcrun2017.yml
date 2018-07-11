@@ -1,0 +1,234 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.vcrun2017
+branch: 3.0
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: vcrun2017
+    buildsystem: simple
+    build-commands:
+      - install -d ${FLATPAK_DEST}/bin
+      - install apply_extra* ${FLATPAK_DEST}/bin
+      - install apply_extra ${FLATPAK_DEST}/bin
+    sources:
+      # https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+      - type: extra-data
+        only-arches:
+          - x86_64
+        url: https://aka.ms/vs/15/release/vc_redist.x64.exe
+        size: 15244952
+        sha256: 9abf3a1386584ea0e4b31198cc56e988e13e67ccdb1137ec6e18e883753d2ddb
+        filename: vc_redist.x64.exe
+      # https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+      - type: extra-data
+        url: https://aka.ms/vs/15/release/vc_redist.x86.exe
+        size: 14611496
+        sha256: eb5f74215e4308d8f2b1d458e78f33050a779b9be19baaa2174de1be9be1b830
+        filename: vc_redist.x86.exe
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: apply_extra
+        commands:
+          - /app/bin/apply_extra64
+          - /app/bin/apply_extra32
+          - 
+          - rm -rf extracted
+          - rm -rf extracted_dlls
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: apply_extra
+        commands:
+          - /app/bin/apply_extra32
+          - 
+          - rm -rf extracted
+          - rm -rf extracted_dlls
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: apply_extra64
+        commands:
+          - OPERATION="vcrun2017"
+          - ARCH="x64"
+          - SOURCE_FILE="vc_redist.x64.exe"
+          - DIR_EXTRACTED="extracted/${ARCH}"
+          - DIR_EXTRACTED_DLLS="extracted_dlls/${ARCH}"
+          - DIR_DLLS="dlls/${ARCH}"
+          - 
+          - mkdir -p $DIR_EXTRACTED
+          - mkdir -p $DIR_EXTRACTED_DLLS
+          - mkdir -p $DIR_DLLS
+          - 
+          - echo "${OPERATION} (${ARCH}): Extracting redistributable"
+          - cabextract -q -d $DIR_EXTRACTED -L $SOURCE_FILE
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a10
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a11
+          - 
+          - # Grab the DLLs we need and correct naming
+          - echo "${OPERATION} (${ARCH}): Saving and renaming the correct DLLs"
+          - mv "${DIR_EXTRACTED_DLLS}/concrt140.dll" "${DIR_DLLS}/concrt140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfc140.dll" "${DIR_DLLS}/mfc140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfc140u.dll" "${DIR_DLLS}/mfc140u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfcm140.dll" "${DIR_DLLS}/mfcm140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfcm140u.dll" "${DIR_DLLS}/mfcm140u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/msvcp140.dll" "${DIR_DLLS}/msvcp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcamp140.dll" "${DIR_DLLS}/vcamp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vccorlib140.dll" "${DIR_DLLS}/vccorlib140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcomp140.dll" "${DIR_DLLS}/vcomp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcruntime140.dll" "${DIR_DLLS}/vcruntime140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_conio_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-conio-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_heap_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-heap-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_locale_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-locale-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_math_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-math-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_runtime_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-runtime-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_stdio_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-stdio-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/ucrtbase.dll" "${DIR_DLLS}/ucrtbase.dll"
+          - 
+          - # Clean-up
+          - echo "${OPERATION} (${ARCH}): Cleaning-up"
+          - rm -rf $DIR_EXTRACTED
+          - rm -rf $DIR_EXTRACTED_DLLS
+          - rm $SOURCE_FILE
+      - type: script
+        dest-filename: apply_extra32
+        commands:
+          - OPERATION="vcrun2017"
+          - ARCH="x86"
+          - SOURCE_FILE="vc_redist.x86.exe"
+          - DIR_EXTRACTED="extracted/${ARCH}"
+          - DIR_EXTRACTED_DLLS="extracted_dlls/${ARCH}"
+          - DIR_DLLS="dlls/${ARCH}"
+          - 
+          - mkdir -p $DIR_EXTRACTED
+          - mkdir -p $DIR_EXTRACTED_DLLS
+          - mkdir -p $DIR_DLLS
+          - 
+          - echo "${OPERATION} (${ARCH}): Extracting redistributable"
+          - cabextract -q -d $DIR_EXTRACTED -L $SOURCE_FILE
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a10
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a11
+          - 
+          - # Grab the DLLs we need and correct naming
+          - echo "${OPERATION} (${ARCH}): Saving and renaming the correct DLLs"
+          - mv "${DIR_EXTRACTED_DLLS}/concrt140.dll" "${DIR_DLLS}/concrt140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfc140.dll" "${DIR_DLLS}/mfc140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfc140u.dll" "${DIR_DLLS}/mfc140u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfcm140.dll" "${DIR_DLLS}/mfcm140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfcm140u.dll" "${DIR_DLLS}/mfcm140u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/msvcp140.dll" "${DIR_DLLS}/msvcp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcamp140.dll" "${DIR_DLLS}/vcamp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vccorlib140.dll" "${DIR_DLLS}/vccorlib140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcomp140.dll" "${DIR_DLLS}/vcomp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcruntime140.dll" "${DIR_DLLS}/vcruntime140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_conio_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-conio-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_heap_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-heap-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_locale_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-locale-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_math_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-math-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_runtime_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-runtime-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_stdio_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-stdio-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/ucrtbase.dll" "${DIR_DLLS}/ucrtbase.dll"
+          - 
+          - # Clean-up
+          - echo "${OPERATION} (${ARCH}): Cleaning-up"
+          - rm -rf $DIR_EXTRACTED
+          - rm -rf $DIR_EXTRACTED_DLLS
+          - rm $SOURCE_FILE
+
+  - name: scripts
+    buildsystem: simple
+    build-commands:
+      - install vcrun2017-install* ${FLATPAK_DEST}/bin
+    sources:
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: vcrun2017-install64
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - 
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x64/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: vcrun2017-install64-wow64
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - 
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x86/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: vcrun2017-install32
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - 
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x86/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
+
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.vcrun2017.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.vcrun2017 --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.vcrun2017
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.vcrun2017.metainfo.xml
+
