@@ -1,6 +1,6 @@
 build-extension: true
 
-id: org.winepak.Platform.Extension.vcrun2015
+id: org.winepak.Platform.Extension.vcrun2017
 branch: 3.0
 
 runtime: org.winepak.Platform
@@ -11,26 +11,26 @@ separate-locales: false
 appstream-compose: false
 
 modules:
-  - name: vcrun2015
+  - name: vcrun2017
     buildsystem: simple
     build-commands:
       - install -d ${FLATPAK_DEST}/bin
       - install apply_extra* ${FLATPAK_DEST}/bin
       - install apply_extra ${FLATPAK_DEST}/bin
     sources:
-      # https://www.microsoft.com/en-us/download/details.aspx?id=48145
+      # https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
       - type: extra-data
         only-arches:
           - x86_64
-        url: https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe
-        size: 14572000
-        sha256: 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
+        url: https://aka.ms/vs/15/release/vc_redist.x64.exe
+        size: 15244952
+        sha256: 9abf3a1386584ea0e4b31198cc56e988e13e67ccdb1137ec6e18e883753d2ddb
         filename: vc_redist.x64.exe
-      # https://www.microsoft.com/en-us/download/details.aspx?id=48145
+      # https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
       - type: extra-data
-        url: https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe
-        size: 13767776
-        sha256: fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
+        url: https://aka.ms/vs/15/release/vc_redist.x86.exe
+        size: 14611496
+        sha256: eb5f74215e4308d8f2b1d458e78f33050a779b9be19baaa2174de1be9be1b830
         filename: vc_redist.x86.exe
       - type: script
         only-arches:
@@ -56,7 +56,7 @@ modules:
           - x86_64
         dest-filename: apply_extra64
         commands:
-          - OPERATION="vcrun2015"
+          - OPERATION="vcrun2017"
           - ARCH="x64"
           - SOURCE_FILE="vc_redist.x64.exe"
           - DIR_EXTRACTED="extracted/${ARCH}"
@@ -100,7 +100,7 @@ modules:
       - type: script
         dest-filename: apply_extra32
         commands:
-          - OPERATION="vcrun2015"
+          - OPERATION="vcrun2017"
           - ARCH="x86"
           - SOURCE_FILE="vc_redist.x86.exe"
           - DIR_EXTRACTED="extracted/${ARCH}"
@@ -145,12 +145,12 @@ modules:
   - name: scripts
     buildsystem: simple
     build-commands:
-      - install vcrun2015-install* ${FLATPAK_DEST}/bin
+      - install vcrun2017-install* ${FLATPAK_DEST}/bin
     sources:
       - type: script
         only-arches:
           - x86_64
-        dest-filename: vcrun2015-install64
+        dest-filename: vcrun2017-install64
         commands:
           - if [ -z "$WINEPREFIX" ] ; then
           - '    echo "No wine prefix set or is empty, abort."'
@@ -175,7 +175,7 @@ modules:
       - type: script
         only-arches:
           - x86_64
-        dest-filename: vcrun2015-install64-wow64
+        dest-filename: vcrun2017-install64-wow64
         commands:
           - if [ -z "$WINEPREFIX" ] ; then
           - '    "No wine prefix set or is empty, abort."'
@@ -200,7 +200,7 @@ modules:
       - type: script
         only-arches:
           - i386
-        dest-filename: vcrun2015-install32
+        dest-filename: vcrun2017-install32
         commands:
           - if [ -z "$WINEPREFIX" ] ; then
           - '    "No wine prefix set or is empty, abort."'
@@ -226,9 +226,9 @@ modules:
   - name: metainfo
     buildsystem: simple
     build-commands:
-      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.vcrun2015.metainfo.xml
-      - appstream-compose --basename=org.winepak.Platform.Extension.vcrun2015 --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.vcrun2015
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.vcrun2017.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.vcrun2017 --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.vcrun2017
     sources:
       - type: file
-        path: org.winepak.Platform.Extension.vcrun2015.metainfo.xml
+        path: org.winepak.Platform.Extension.vcrun2017.metainfo.xml
 
