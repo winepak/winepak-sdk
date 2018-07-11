@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<component type="addon">
-    <id>org.winepak.Platform.Wine</id>
-    <extends>org.winepak.Platform.desktop</extends>
-    <metadata_license>CC0-1.0</metadata_license>
-    <name>Wine Staging</name>
-    <summary>Add Wine Staging to the winepak Platform</summary>
-</component>
