@@ -15,6 +15,8 @@ modules:
     buildsystem: simple
     build-commands:
       - install -d ${FLATPAK_DEST}/bin
+      - install apply_extra* ${FLATPAK_DEST}/bin
+      - install apply_extra ${FLATPAK_DEST}/bin
     sources:
       # https://www.microsoft.com/en-us/download/details.aspx?id=48145
       - type: extra-data
@@ -23,13 +25,122 @@ modules:
         url: https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe
         size: 14572000
         sha256: 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
-        filename: vcrun2015_x64.exe
+        filename: vc_redist.x64.exe
       # https://www.microsoft.com/en-us/download/details.aspx?id=48145
       - type: extra-data
         url: https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe
         size: 13767776
         sha256: fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
-        filename: vcrun2015_x86.exe
+        filename: vc_redist.x86.exe
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: apply_extra
+        commands:
+          - /app/bin/apply_extra64
+          - /app/bin/apply_extra32
+          - 
+          - rm -rf extracted
+          - rm -rf extracted_dlls
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: apply_extra
+        commands:
+          - /app/bin/apply_extra32
+          - 
+          - rm -rf extracted
+          - rm -rf extracted_dlls
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: apply_extra64
+        commands:
+          - OPERATION="vcrun2015"
+          - ARCH="x64"
+          - SOURCE_FILE="vc_redist.x64.exe"
+          - DIR_EXTRACTED="extracted/${ARCH}"
+          - DIR_EXTRACTED_DLLS="extracted_dlls/${ARCH}"
+          - DIR_DLLS="dlls/${ARCH}"
+          - 
+          - mkdir -p $DIR_EXTRACTED
+          - mkdir -p $DIR_EXTRACTED_DLLS
+          - mkdir -p $DIR_DLLS
+          - 
+          - echo "${OPERATION} (${ARCH}): Extracting redistributable"
+          - cabextract -q -d $DIR_EXTRACTED -L $SOURCE_FILE
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a10
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a11
+          - 
+          - # Grab the DLLs we need and correct naming
+          - echo "${OPERATION} (${ARCH}): Saving and renaming the correct DLLs"
+          - mv "${DIR_EXTRACTED_DLLS}/concrt140.dll" "${DIR_DLLS}/concrt140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfc140.dll" "${DIR_DLLS}/mfc140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfc140u.dll" "${DIR_DLLS}/mfc140u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfcm140.dll" "${DIR_DLLS}/mfcm140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfcm140u.dll" "${DIR_DLLS}/mfcm140u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/msvcp140.dll" "${DIR_DLLS}/msvcp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcamp140.dll" "${DIR_DLLS}/vcamp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vccorlib140.dll" "${DIR_DLLS}/vccorlib140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcomp140.dll" "${DIR_DLLS}/vcomp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcruntime140.dll" "${DIR_DLLS}/vcruntime140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_conio_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-conio-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_heap_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-heap-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_locale_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-locale-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_math_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-math-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_runtime_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-runtime-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_stdio_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-stdio-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/ucrtbase.dll" "${DIR_DLLS}/ucrtbase.dll"
+          - 
+          - # Clean-up
+          - echo "${OPERATION} (${ARCH}): Cleaning-up"
+          - rm -rf $DIR_EXTRACTED
+          - rm -rf $DIR_EXTRACTED_DLLS
+          - rm $SOURCE_FILE
+      - type: script
+        dest-filename: apply_extra32
+        commands:
+          - OPERATION="vcrun2015"
+          - ARCH="x86"
+          - SOURCE_FILE="vc_redist.x86.exe"
+          - DIR_EXTRACTED="extracted/${ARCH}"
+          - DIR_EXTRACTED_DLLS="extracted_dlls/${ARCH}"
+          - DIR_DLLS="dlls/${ARCH}"
+          - 
+          - mkdir -p $DIR_EXTRACTED
+          - mkdir -p $DIR_EXTRACTED_DLLS
+          - mkdir -p $DIR_DLLS
+          - 
+          - echo "${OPERATION} (${ARCH}): Extracting redistributable"
+          - cabextract -q -d $DIR_EXTRACTED -L $SOURCE_FILE
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a10
+          - cabextract -q -d $DIR_EXTRACTED_DLLS -L ${DIR_EXTRACTED}/a11
+          - 
+          - # Grab the DLLs we need and correct naming
+          - echo "${OPERATION} (${ARCH}): Saving and renaming the correct DLLs"
+          - mv "${DIR_EXTRACTED_DLLS}/concrt140.dll" "${DIR_DLLS}/concrt140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfc140.dll" "${DIR_DLLS}/mfc140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfc140u.dll" "${DIR_DLLS}/mfc140u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfcm140.dll" "${DIR_DLLS}/mfcm140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/mfcm140u.dll" "${DIR_DLLS}/mfcm140u.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/msvcp140.dll" "${DIR_DLLS}/msvcp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcamp140.dll" "${DIR_DLLS}/vcamp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vccorlib140.dll" "${DIR_DLLS}/vccorlib140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcomp140.dll" "${DIR_DLLS}/vcomp140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/vcruntime140.dll" "${DIR_DLLS}/vcruntime140.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_conio_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-conio-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_heap_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-heap-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_locale_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-locale-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_math_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-math-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_runtime_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-runtime-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/api_ms_win_crt_stdio_l1_1_0.dll" "${DIR_DLLS}/api-ms-win-crt-stdio-l1-1-0.dll"
+          - mv "${DIR_EXTRACTED_DLLS}/ucrtbase.dll" "${DIR_DLLS}/ucrtbase.dll"
+          - 
+          - # Clean-up
+          - echo "${OPERATION} (${ARCH}): Cleaning-up"
+          - rm -rf $DIR_EXTRACTED
+          - rm -rf $DIR_EXTRACTED_DLLS
+          - rm $SOURCE_FILE
 
   - name: scripts
     buildsystem: simple
@@ -45,23 +156,47 @@ modules:
           - '    echo "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
-          - ''
+          - 
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - ''
-          - wine64 ${EXTENSION_DIR}/extra/vcrun2015_x64.exe /q
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x64/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
       - type: script
         only-arches:
           - x86_64
         dest-filename: vcrun2015-install64-wow64
         commands:
           - if [ -z "$WINEPREFIX" ] ; then
-          - '    echo "No wine prefix set or is empty, abort."'
+          - '    "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
-          - ''
+          - 
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - ''
-          - wine ${EXTENSION_DIR}/extra/vcrun2015_x86.exe /q
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
       - type: script
         only-arches:
           - i386
@@ -71,10 +206,22 @@ modules:
           - '    "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
-          - ''
+          - 
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-          - ''
-          - wine ${EXTENSION_DIR}/extra/vcrun2015_x86.exe /q
+          - 
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/x86/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - 
+          - for dll in ${EXTENSION_DIR}/extra/dlls/x64/*.dll
+          - do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          - 
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native,builtin"'
+          - '    wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v ${name} /d native,builtin /f'
+          - done
 
   - name: metainfo
     buildsystem: simple
