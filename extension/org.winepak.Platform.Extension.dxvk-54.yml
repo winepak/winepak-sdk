@@ -15,16 +15,20 @@ modules:
     buildsystem: simple
     build-commands:
       - install -d ${FLATPAK_DEST}/bin/
-      - install -d ${FLATPAK_DEST}/dlls/x32/
-      - install -d ${FLATPAK_DEST}/dlls/x64/
-      - install -D x32/d3d11.dll ${FLATPAK_DEST}/dlls/x32/
-      - install -D x64/d3d11.dll ${FLATPAK_DEST}/dlls/x64/
-      - install -D x32/dxgi.dll ${FLATPAK_DEST}/dlls/x32/
-      - install -D x64/dxgi.dll ${FLATPAK_DEST}/dlls/x64/
+      - install -d ${FLATPAK_DEST}/x32/
+      - install -d ${FLATPAK_DEST}/x64/
+      - install -D x32/setup_dxvk.sh ${FLATPAK_DEST}/x32/setup_dxvk.sh
+      - install -D x64/setup_dxvk.sh ${FLATPAK_DEST}/x64/setup_dxvk.sh
+      - install -D x32/d3d11.dll ${FLATPAK_DEST}/x32/d3d11.dll
+      - install -D x64/d3d11.dll ${FLATPAK_DEST}/x64/d3d11.dll
+      - install -D x32/dxgi.dll ${FLATPAK_DEST}/x32/dxgi.dll
+      - install -D x64/dxgi.dll ${FLATPAK_DEST}/x64/dxgi.dll
     sources:
       - type: archive
         url: https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz
         sha256: 1c2f186baaa01d2de7b832f6f05021bdd29eccb65fc197c8b15adfd4e08f9640
+      - type: patch
+        path: patch/fix-dxvk-setup.patch
 
   - name: scripts
     buildsystem: simple
@@ -43,47 +47,38 @@ modules:
           -
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
           -
-          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
-          - cp ${EXTENSION_DIR}/dlls/x64/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - . ${EXTENSION_DIR}/x64/setup_dxvk.sh -y
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: dxvk-install64-wow64
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
           -
-          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
-          - cp ${EXTENSION_DIR}/dlls/x32/*.dll "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - unix_sys_path="$(wine64 winepath -u 'C:\windows\syswow64')"
+          - if [ $? -ne 0 ]; then
+          - '    echo "Error while retrieving unix path for "C:\windows\syswow64", abort."'
+          - '    exit 1'
+          - fi
           -
-          - for dll in ${EXTENSION_DIR}/dlls/x64/*.dll
-          - do
-          - '   filename=${dll##*/}'
-          - '   name=${filename%.dll}'
-          -
-          - '   echo "[REGEDIT] Adding:"'
-          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
-          - '   echo "*${name}=native"'
-          - '   wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
-          - done
+          - cp ${EXTENSION_DIR}/x32/*.dll $unix_sys_path/
       - type: script
         only-arches:
           - i386
         dest-filename: dxvk-install32
         commands:
           - if [ -z "$WINEPREFIX" ] ; then
-          - '    "No wine prefix set or is empty, abort."'
+          - '    echo "No wine prefix set or is empty, abort."'
           - '    exit 1'
           - fi
           -
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
           -
-          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
-          - cp ${EXTENSION_DIR}/dlls/x32/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
-          -
-          - for dll in ${EXTENSION_DIR}/dlls/x32/*.dll
-          - do
-          - '   filename=${dll##*/}'
-          - '   name=${filename%.dll}'
-          -
-          - '   echo "[REGEDIT] Adding:"'
-          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
-          - '   echo "*${name}=native"'
-          - '   wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
-          - done
+          - . ${EXTENSION_DIR}/x32/setup_dxvk.sh -y
 
   - name: metainfo
     buildsystem: simple

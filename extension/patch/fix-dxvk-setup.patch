@@ -1,0 +1,36 @@
+diff --git a/x32/setup_dxvk.sh b/x32/setup_dxvk.sh
+index 72621cf..45d53b8 100755
+--- a/x32/setup_dxvk.sh
++++ b/x32/setup_dxvk.sh
+@@ -2,7 +2,7 @@
+ 
+ export WINEDEBUG=-all
+ 
+-dlls_dir=`dirname "$(readlink -f $0)"`
++dlls_dir=`dirname "$(readlink -f $BASH_SOURCE)"`
+ build_arch='x86'
+ 
+ if [ ! -f "$dlls_dir/d3d11.dll" ] || [ ! -f "$dlls_dir/dxgi.dll" ]; then
+@@ -177,4 +177,3 @@ echo '[1/2] d3d11:'
+ $fun d3d11
+ echo '[2/2] dxgi:'
+ $fun dxgi
+-exit $ret
+diff --git a/x64/setup_dxvk.sh b/x64/setup_dxvk.sh
+index 43504b3..d449d9a 100755
+--- a/x64/setup_dxvk.sh
++++ b/x64/setup_dxvk.sh
+@@ -2,7 +2,7 @@
+ 
+ export WINEDEBUG=-all
+ 
+-dlls_dir=`dirname "$(readlink -f $0)"`
++dlls_dir=`dirname "$(readlink -f $BASH_SOURCE)"`
+ build_arch='x86_64'
+ 
+ if [ ! -f "$dlls_dir/d3d11.dll" ] || [ ! -f "$dlls_dir/dxgi.dll" ]; then
+@@ -177,4 +177,3 @@ echo '[1/2] d3d11:'
+ $fun d3d11
+ echo '[2/2] dxgi:'
+ $fun dxgi
+-exit $ret
