@@ -25,8 +25,8 @@ modules:
       - install -D x64/dxgi.dll ${FLATPAK_DEST}/x64/dxgi.dll
     sources:
       - type: archive
-        url: https://github.com/doitsujin/dxvk/releases/download/v0.62/dxvk-0.62.tar.gz
-        sha256: b9dbb57908e24b094b68f665ad729b6ee277eecc8ba04a6e6e4f8a4d2dfd94e3
+        url: https://github.com/doitsujin/dxvk/releases/download/v0.63/dxvk-0.63.tar.gz
+        sha256: 696df816bd9640770dee14f932bc641a16261fccf76be7c28d812a64ca6040fa
       - type: patch
         path: patch/fix-dxvk-setup.patch
 
