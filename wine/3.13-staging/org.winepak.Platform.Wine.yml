@@ -88,8 +88,8 @@ modules:
         url: https://dl.winehq.org/wine/source/3.x/wine-3.13.tar.xz
         sha256: 0785d74852232c1f6e07ac081875e92219a4428ddcc8931632fcf1924941bbd4
       - type: archive
-        url: https://github.com/wine-staging/wine-staging/archive/v3.13.tar.gz
-        sha256: 40771e5bcab58fd3fa0fb6d165cb82fbc268d7640f66800f74092b39d9b39e26
+        url: https://github.com/wine-staging/wine-staging/archive/v3.13.1.tar.gz
+        sha256: 5c6a8edff88f4c0239d8bd646d5dcd628400627dc29a374ef196cd0f8b381e9a
       - type: shell
         commands:
           - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
