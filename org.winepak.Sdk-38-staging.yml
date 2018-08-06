@@ -289,6 +289,19 @@ modules:
         commands:
           - mkdir -p /usr/lib/extra-links
           - ln -s -f /usr/lib/i386-linux-gnu/lib/ld-linux.so.2 /usr/lib/extra-links/ld-linux.so.2
+  
+  - name: lib32-i386-ld-so-conf
+    only-arches:
+      - x86_64
+    ensure-writable:
+      - /etc/ld.so.conf
+    buildsystem: simple
+    build-commands: []
+    sources:
+      - type: shell
+        commands:
+          - echo "include /run/flatpak/ld.so.conf.d/app-*-org.freedesktop.Platform.GL32.*.conf" >> /usr/etc/ld.so.conf
+          - echo "/usr/lib/i386-linux-gnu/lib" >> /usr/etc/ld.so.conf
 
   - name: metainfo
     buildsystem: simple
