@@ -131,6 +131,18 @@ sdk-extensions:
   - org.freedesktop.Sdk.Locale
   - org.freedesktop.Sdk.Docs
 
+platform-extensions:
+  - org.freedesktop.Platform.Locale
+
+inherit-sdk-extensions:
+  - org.freedesktop.Sdk.Extension
+
+inherit-extensions:
+  - org.freedesktop.Platform.GL
+  - org.freedesktop.Platform.Timezones
+  - org.freedesktop.Platform.GStreamer
+  - org.freedesktop.Platform.VAAPI.Intel
+
 add-extensions:
   org.winepak.Sdk.Docs:
     directory: share/runtime/docs
@@ -189,6 +201,7 @@ add-extensions:
     download-if: active-gl-driver
     enable-if: active-gl-driver
 
+<<<<<<< HEAD
 platform-extensions:
   - org.freedesktop.Platform.Locale
 >>>>>>> [WIP] Update org.winepak.Sdk (#12)
@@ -210,6 +223,8 @@ inherit-extensions:
   - org.freedesktop.Platform.VAAPI.Intel
 >>>>>>> [WIP] Update org.winepak.Sdk (#12)
 
+=======
+>>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
 finish-args:
   - --sdk=org.winepak.Sdk//3.0
   - --runtime=org.winepak.Platform//3.0
@@ -280,19 +295,31 @@ modules:
       - mkdir -p /usr/lib/gecko
       - mkdir -p /usr/lib/mono
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       - mkdir -p /usr/lib/i386-linux-gnu
 >>>>>>> [WIP] Update org.winepak.Sdk (#12)
+=======
+      - |
+        if [ ! -L "/usr/lib/i386-linux-gnu" ] ; then
+            mkdir -p /usr/lib/i386-linux-gnu
+        fi
+>>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
 
   - name: openldap
     config-opts:
       - --disable-static
+<<<<<<< HEAD
 <<<<<<< HEAD
       - --disable-bdb
       - --disable-hdb
     sources:
       # OpenLDAP required for Wine
 =======
+=======
+      - --disable-bdb
+      - --disable-hdb
+>>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
     sources:
       # OpenLDAP required for Wine
       # Due to the licencing of BDB v6.* we must stick with OpenLDAP 2.4.46
@@ -302,6 +329,7 @@ modules:
       - type: archive
         url: https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.46.tgz
         sha256: 9a90dcb86b99ae790ccab93b7585a31fbcbeec8c94bf0f7ab0ca0a87ea0c4b2d
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     modules:
@@ -328,6 +356,8 @@ modules:
             commands:
             - "./dist/configure $@"
 >>>>>>> [WIP] Update org.winepak.Sdk (#12)
+=======
+>>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
 
   - name: cabextract
     buildsystem: autotools
@@ -450,6 +480,7 @@ modules:
         url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
         sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
 
+<<<<<<< HEAD
   # Override i386 symlink for /usr/lib/ld-linux.so.2
   # In general we don't want to override things from the freedesktop Sdk and 
   # Platform but, consider winepak solves a unique case we'll make an exception.
@@ -473,6 +504,8 @@ modules:
           - ln -s -f /usr/lib/i386-linux-gnu/lib/ld-linux.so.2 /usr/lib/extra-links/ld-linux.so.2
 >>>>>>> [WIP] Update org.winepak.Sdk (#12)
 
+=======
+>>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
   - name: metainfo
     buildsystem: simple
     build-commands:

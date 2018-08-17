@@ -67,6 +67,7 @@ add-extensions:
   org.winepak.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: 3.13-staging
+<<<<<<< HEAD
     autodelete: true
     add-ld-path: .
 
@@ -74,6 +75,13 @@ add-extensions:
     directory: lib/debug/lib/i386-linux-gnu
     version: 3.13-staging
     autodelete: true
+=======
+    versions: 3.13-staging;3.0
+    add-ld-path: lib
+    subdirectories: false
+    autodelete: false
+    no-autodownload: false
+>>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
 
   org.freedesktop.Platform.GL32:
     directory: lib/i386-linux-gnu/lib/GL
@@ -140,6 +148,13 @@ modules:
       - mkdir -p /usr/lib/extension
       - mkdir -p /usr/lib/gecko
       - mkdir -p /usr/lib/mono
+<<<<<<< HEAD
+=======
+      - |
+        if [ ! -L "/usr/lib/i386-linux-gnu" ] ; then
+            mkdir -p /usr/lib/i386-linux-gnu
+        fi
+>>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
 
   - name: openldap
     config-opts:
@@ -247,6 +262,7 @@ modules:
       - type: shell
         commands:
           - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
+<<<<<<< HEAD
     post-install:
       - rm -rf /usr/share/wine/gecko
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
@@ -259,6 +275,8 @@ modules:
           mv $i /usr/lib/i386-linux-gnu/wine/bin
           ln -s "/usr/lib/i386-linux-gnu/wine/bin/$(basename $i)" $i
         done
+=======
+>>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
 
   - name: metainfo
     buildsystem: simple
