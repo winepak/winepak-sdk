@@ -14,7 +14,7 @@ winepak is structured into the runtime and a few key extensions, these are:
 The core of winepak is the `org.winepak.Sdk` and `org.winepak.Platform`. The Sdk & Platform contains the core modules for winepak, wine and it's dependencies. Each version of the winepak Sdk & Platform contains specific Wine versions, example:
 
  - `org.winepak.Platform//3.0` -> Wine 3.0
- - `org.winepak.Platform//3.11-staging` -> Wine staging 3.11
+ - `org.winepak.Platform//3.13-staging` -> Wine staging 3.13
 
 ### WoW64
 The second import part of winepak is `org.winepak.Platform.Compat`, more specifically `org.winepak.Platform.Compat.i386`. This contains the `i386` (32 bit) build of Wine and the runtime but as a `x86_64` (64 bit) extension. Wine 64 bit is essentially useless unless you have 32 bit wine installed, this is also known as WoW64. Microsoft Windows still requires many 32 bit libraries on a 64 bit platform, meaning you need 32 bit Wine. Flatpak doesn't really like mixing arches by default so we need to include a 32 bit platform in the 64 bit platform. Normally with the `org.freedesktop.Platform` this is done per-application, but because Wine is crippled without a multiarch setup winepak includes the WoW64 parts in the Platform by default.
@@ -47,8 +47,16 @@ Remember run all `flatpak` commands as a user, root and `sudo` are not needed. I
 First you need the `org.freedesktop.Sdk` and `org.freedesktop.Platform` from [`flathub.org`](https://flathub.org) as we base the winepak Sdk & Platform off them.
 
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    flatpak install flathub org.freedesktop.Sdk
-    flatpak install flathub org.freedesktop.Platform
+    
+    # x86_64
+    flatpak install flathub org.freedesktop.Sdk/x86_64/18.08 org.freedesktop.Sdk.Debug/x86_64/18.08 org.freedesktop.Sdk.Docs/x86_64/18.08 org.freedesktop.Sdk.Locale/x86_64/18.08 org.freedesktop.Platform/x86_64/18.08 org.freedesktop.Platform.Locale/x86_64/18.08
+    
+    # i386
+    flatpak install flathub org.freedesktop.Sdk/i386/18.08 org.freedesktop.Sdk.Debug/i386/18.08 org.freedesktop.Sdk.Docs/i386/18.08 org.freedesktop.Sdk.Locale/i386/18.08 org.freedesktop.Platform/i386/18.08 org.freedesktop.Platform.Locale/i386/18.08
+
+    # You may need to force additional Locale downloads
+    flatpak update --subpath= org.freedesktop.Sdk.Locale
+    flatpak update --subpath= org.freedesktop.Platform.Locale
 
 ### New repo
 Next lets create a local repository for building and storing our builds. The local repository directory will be `winepak-repo`. In-order to avoid conflicts with the [official winepak repository](https://winepak.org/) lets call it `winepak-local`:
@@ -63,10 +71,10 @@ Now we need to build the `org.winepak.Sdk` and `org.winepak.Platform`. In the fo
 
 Building the Sdk and Platform for each arch can take time.
 
-You can also build other versions of the Sdk in the repository by specifying other manifest, example Wine Staging 3.11:
+You can also build other versions of the Sdk in the repository by specifying other manifest, example Wine Staging 3.13:
 
-    flatpak-builder --arch=i386 --ccache --force-clean --repo=winepak-repo builds/sdk/3.11-staging-i386 winepak-sdk-images/org.winepak.Sdk-311-staging.yml
-    flatpak-builder --arch=x86_64 --ccache --force-clean --repo=winepak-repo builds/sdk/3.11-staging-x86_64 winepak-sdk-images/org.winepak.Sdk-311-staging.yml
+    flatpak-builder --arch=i386 --ccache --force-clean --repo=winepak-repo builds/sdk/3.13-staging-i386 winepak-sdk-images/org.winepak.Sdk-313-staging.yml
+    flatpak-builder --arch=x86_64 --ccache --force-clean --repo=winepak-repo builds/sdk/3.13-staging-x86_64 winepak-sdk-images/org.winepak.Sdk-313-staging.yml
 
 ### Install the runtime
 Now install the `org.winepak.Sdk` and `org.winepak.Platform`. If you don't build with a GPG key then you will be forced to install the runtime with `--user`.
@@ -76,19 +84,19 @@ Now install the `org.winepak.Sdk` and `org.winepak.Platform`. If you don't build
 
 If you built the `staging` branch, install those as well:
 
-    flatpak -y --user install winepak-local org.winepak.Sdk/i386/3.11-staging org.winepak.Sdk/x86_64/3.11-staging 
-    flatpak -y --user install winepak-local org.winepak.Platform/i386/3.11-staging org.winepak.Platform/x86_64/3.11-staging
+    flatpak -y --user install winepak-local org.winepak.Sdk/i386/3.13-staging org.winepak.Sdk/x86_64/3.13-staging 
+    flatpak -y --user install winepak-local org.winepak.Platform/i386/3.13-staging org.winepak.Platform/x86_64/3.13-staging
 
 ### Building WoW64 Support
 In order for Wine 64 bit to be fully functional you need to build something called "WoW64" support, which is a Windows method of loading 32 bit libraries and binaries on a 64 bit environment. The current method to achieve this is building a "*.Compat.i386" extension, which is simply the `i386` `*.Platform` bundle as an extension to the `x86_64` Platform.
 
 To build WoW64 support run:
 
-    flatpak build-commit-from --src-ref=runtime/org.winepak.Platform/i386/3.0 winepak-repo runtime/org.winepak.Platform.Compat.i386/x86_64/3.0
+    flatpak build-commit-from --src-repo=winepak-repo --src-ref=runtime/org.winepak.Platform/i386/3.0 winepak-repo runtime/org.winepak.Platform.Compat.i386/x86_64/3.0
 
-You can also build other versions of the `Compat.i386` in the repository by specifying other manifest, example Wine Staging 3.11:
+You can also build other versions of the `Compat.i386` in the repository by specifying other manifest, example Wine Staging 3.13:
 
-    flatpak build-commit-from --src-ref=runtime/org.winepak.Platform/i386/3.11-staging winepak-repo runtime/org.winepak.Platform.Compat.i386/x86_64/3.11-staging
+    flatpak build-commit-from --src-repo=winepak-repo --src-ref=runtime/org.winepak.Platform/i386/3.13-staging winepak-repo runtime/org.winepak.Platform.Compat.i386/x86_64/3.13-staging
 
 
 ### Install WoW64
@@ -98,7 +106,7 @@ If you built WoW64 support install those as well:
 
 If you built the `staging` branch, install those as well:
 
-    flatpak -y --user install winepak-local org.winepak.Platform.Compat.i386/x86_64/3.11-staging
+    flatpak -y --user install winepak-local org.winepak.Platform.Compat.i386/x86_64/3.13-staging
 
 ### Building an application
 See [winepak/applications](https://github.com/winepak/applications).

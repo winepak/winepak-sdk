@@ -5,7 +5,7 @@ id-platform: org.winepak.Platform
 branch: 3.13-staging
 
 runtime: org.freedesktop.Platform
-runtime-version: 1.6
+runtime-version: 18.08
 sdk: org.freedesktop.Sdk
 
 sdk-extensions:
