@@ -120,7 +120,7 @@ modules:
           - '   echo "[REGEDIT] Adding:"'
           - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
           - '   echo "*${name}=native"'
-          - '   wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - '   wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
           - done
       - type: script
         only-arches:
