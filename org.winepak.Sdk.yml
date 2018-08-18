@@ -62,27 +62,6 @@ add-extensions:
     autodelete: true
     no-autodownload: true
 
-  org.winepak.Platform.Compat.i386:
-    directory: lib/i386-linux-gnu
-    version: 3.0
-    versions: 3.0
-    add-ld-path: lib
-    subdirectories: false
-    autodelete: false
-    no-autodownload: false
-
-  org.freedesktop.Platform.GL32:
-    directory: lib/i386-linux-gnu/lib/GL
-    version: 1.4
-    versions: 1.6;1.4
-    add-ld-path: lib
-    subdirectories: true
-    autodelete: false
-    no-autodownload: true
-    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
-    download-if: active-gl-driver
-    enable-if: active-gl-driver
-
 finish-args:
   - --sdk=org.winepak.Sdk//3.0
   - --runtime=org.winepak.Platform//3.0
@@ -98,7 +77,7 @@ cleanup:
   - /share/man
 
 cleanup-commands:
-  - /usr/libexec/freedesktop-post.sh
+  - sh -x /usr/libexec/freedesktop-post.sh
 
 cleanup-platform:
   - /docs
@@ -108,7 +87,7 @@ cleanup-platform:
   - /lib/pkgconfig
 
 cleanup-platform-commands:
-  - /usr/libexec/freedesktop-post.sh
+  - sh -x /usr/libexec/freedesktop-post.sh
 
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -126,10 +105,6 @@ modules:
       - mkdir -p /usr/lib/extension
       - mkdir -p /usr/lib/gecko
       - mkdir -p /usr/lib/mono
-      - |
-        if [ ! -L "/usr/lib/i386-linux-gnu" ] ; then
-            mkdir -p /usr/lib/i386-linux-gnu
-        fi
 
   - name: openldap
     config-opts:
@@ -138,7 +113,6 @@ modules:
       - --disable-hdb
     sources:
       # OpenLDAP required for Wine
-      # Due to the licencing of BDB v6.* we must stick with OpenLDAP 2.4.46
       # FTP isn't support in flatpak & flatpak-builder so we use he https mirror
       # https://www.openldap.org/software/download/OpenLDAP/openldap-release/
       - type: archive
