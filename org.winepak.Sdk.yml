@@ -62,11 +62,34 @@ add-extensions:
     autodelete: true
     no-autodownload: true
 
+  org.winepak.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: 3.0
+    autodelete: true
+    add-ld-path: .
+
+  org.winepak.Platform.Compat.i386.Debug:
+    directory: lib/debug/lib/i386-linux-gnu
+    version: 3.0
+    autodelete: true
+
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/lib/GL
+    version: 1.4
+    versions: 1.6;1.4
+    add-ld-path: lib
+    subdirectories: true
+    autodelete: false
+    no-autodownload: true
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+
 finish-args:
   - --sdk=org.winepak.Sdk//3.0
   - --runtime=org.winepak.Platform//3.0
   - --allow=multiarch
-  - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/bin
+  - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/wine/bin
   - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share
   - --env=WINEDEBUG=-all
   - --env=WINEPREFIX=/var/data/wine
@@ -78,6 +101,11 @@ cleanup:
 
 cleanup-commands:
   - sh -x /usr/libexec/freedesktop-post.sh
+  - |
+    if [ -L /usr/lib/i386-linux-gnu ]; then
+      rm /usr/lib/i386-linux-gnu
+      mkdir -p /usr/lib/i386-linux-gnu
+    fi
 
 cleanup-platform:
   - /docs
@@ -88,6 +116,11 @@ cleanup-platform:
 
 cleanup-platform-commands:
   - sh -x /usr/libexec/freedesktop-post.sh
+  - |
+    if [ -L /usr/lib/i386-linux-gnu ]; then
+      rm /usr/lib/i386-linux-gnu
+      mkdir -p /usr/lib/i386-linux-gnu
+    fi
 
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -139,11 +172,7 @@ modules:
   - name: wine-win64
     only-arches:
       - x86_64
-    make-install-args:
-      - libdir=/usr/lib
-      - dlldir=/usr/lib/wine
     config-opts:
-      - --libdir=/usr/lib
       - --enable-win64
       - --disable-win16
       - --disable-tests
@@ -164,24 +193,20 @@ modules:
     cleanup:
       - /share/man
       - /share/applications
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
+        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
     post-install:
       - rm -rf /usr/share/wine/gecko
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
       - rm -rf /usr/share/wine/mono
       - ln -s /usr/lib/mono /usr/share/wine/mono
-    sources:
-      - type: archive
-        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
-        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
 
   - name: wine-win32
     only-arches:
       - i386
-    make-install-args:
-      - libdir=/usr/lib
-      - dlldir=/usr/lib/wine
     config-opts:
-      - --libdir=/usr/lib
       - --disable-win64
       - --disable-win16
       - --disable-tests
@@ -204,15 +229,22 @@ modules:
       - /include
       - /share/man
       - /share/applications
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
+        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
     post-install:
       - rm -rf /usr/share/wine/gecko
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
       - rm -rf /usr/share/wine/mono
       - ln -s /usr/lib/mono /usr/share/wine/mono
-    sources:
-      - type: archive
-        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
-        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
+      - 
+      - mkdir -p /usr/lib/i386-linux-gnu/wine/bin
+      - |
+        for i in /usr/bin/wine*; do
+          mv $i /usr/lib/i386-linux-gnu/wine/bin
+          ln -s "/usr/lib/i386-linux-gnu/wine/bin/$(basename $i)" $i
+        done
 
   - name: metainfo
     buildsystem: simple
