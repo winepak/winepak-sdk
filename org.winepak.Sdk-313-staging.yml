@@ -65,10 +65,16 @@ add-extensions:
     no-autodownload: true
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   org.winepak.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: 3.13-staging
 <<<<<<< HEAD
+=======
+  org.winepak.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: 3.13-staging
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
     autodelete: true
     add-ld-path: .
 
@@ -76,6 +82,7 @@ add-extensions:
     directory: lib/debug/lib/i386-linux-gnu
     version: 3.13-staging
     autodelete: true
+<<<<<<< HEAD
 =======
     versions: 3.13-staging;3.0
     add-ld-path: lib
@@ -83,6 +90,8 @@ add-extensions:
     autodelete: false
     no-autodownload: false
 >>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
   org.freedesktop.Platform.GL32:
     directory: lib/i386-linux-gnu/lib/GL
@@ -96,8 +105,11 @@ add-extensions:
     download-if: active-gl-driver
     enable-if: active-gl-driver
 
+<<<<<<< HEAD
 =======
 >>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 finish-args:
   - --sdk=org.winepak.Sdk//3.13-staging
   - --runtime=org.winepak.Platform//3.13-staging
@@ -115,13 +127,19 @@ cleanup:
 cleanup-commands:
   - sh -x /usr/libexec/freedesktop-post.sh
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
   - |
     if [ -L /usr/lib/i386-linux-gnu ]; then
       rm /usr/lib/i386-linux-gnu
       mkdir -p /usr/lib/i386-linux-gnu
     fi
+<<<<<<< HEAD
 =======
 >>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
 cleanup-platform:
   - /docs
@@ -133,13 +151,19 @@ cleanup-platform:
 cleanup-platform-commands:
   - sh -x /usr/libexec/freedesktop-post.sh
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
   - |
     if [ -L /usr/lib/i386-linux-gnu ]; then
       rm /usr/lib/i386-linux-gnu
       mkdir -p /usr/lib/i386-linux-gnu
     fi
+<<<<<<< HEAD
 =======
 >>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -275,6 +299,9 @@ modules:
         commands:
           - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
     post-install:
       - rm -rf /usr/share/wine/gecko
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
@@ -287,8 +314,11 @@ modules:
           mv $i /usr/lib/i386-linux-gnu/wine/bin
           ln -s "/usr/lib/i386-linux-gnu/wine/bin/$(basename $i)" $i
         done
+<<<<<<< HEAD
 =======
 >>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
   - name: metainfo
     buildsystem: simple

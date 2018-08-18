@@ -181,6 +181,7 @@ add-extensions:
     no-autodownload: true
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   org.winepak.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: 3.0
@@ -189,6 +190,18 @@ add-extensions:
     subdirectories: false
     autodelete: false
     no-autodownload: false
+=======
+  org.winepak.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: 3.0
+    autodelete: true
+    add-ld-path: .
+
+  org.winepak.Platform.Compat.i386.Debug:
+    directory: lib/debug/lib/i386-linux-gnu
+    version: 3.0
+    autodelete: true
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
   org.freedesktop.Platform.GL32:
     directory: lib/i386-linux-gnu/lib/GL
@@ -202,6 +215,7 @@ add-extensions:
     download-if: active-gl-driver
     enable-if: active-gl-driver
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 platform-extensions:
   - org.freedesktop.Platform.Locale
@@ -228,15 +242,21 @@ inherit-extensions:
 >>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
 =======
 >>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 finish-args:
   - --sdk=org.winepak.Sdk//3.0
   - --runtime=org.winepak.Platform//3.0
   - --allow=multiarch
 <<<<<<< HEAD
+<<<<<<< HEAD
   - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/wine/bin
 =======
   - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/bin
 >>>>>>> [WIP] Redesign Platform & Sdk
+=======
+  - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/wine/bin
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
   - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share
   - --env=WINEDEBUG=-all
   - --env=WINEPREFIX=/var/data/wine
@@ -260,7 +280,15 @@ cleanup-commands:
 >>>>>>> [WIP] Redesign Platform & Sdk
 =======
   - sh -x /usr/libexec/freedesktop-post.sh
+<<<<<<< HEAD
 >>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
+=======
+  - |
+    if [ -L /usr/lib/i386-linux-gnu ]; then
+      rm /usr/lib/i386-linux-gnu
+      mkdir -p /usr/lib/i386-linux-gnu
+    fi
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
 cleanup-platform:
   - /docs
@@ -283,7 +311,15 @@ cleanup-platform-commands:
 >>>>>>> [WIP] Redesign Platform & Sdk
 =======
   - sh -x /usr/libexec/freedesktop-post.sh
+<<<<<<< HEAD
 >>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
+=======
+  - |
+    if [ -L /usr/lib/i386-linux-gnu ]; then
+      rm /usr/lib/i386-linux-gnu
+      mkdir -p /usr/lib/i386-linux-gnu
+    fi
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -422,11 +458,16 @@ modules:
     cleanup:
       - /share/man
       - /share/applications
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
+        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
     post-install:
       - rm -rf /usr/share/wine/gecko
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
       - rm -rf /usr/share/wine/mono
       - ln -s /usr/lib/mono /usr/share/wine/mono
+<<<<<<< HEAD
     sources:
       - type: archive
         url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
@@ -439,6 +480,8 @@ modules:
       - ln -s /usr/lib/mono /usr/share/wine/mono
 =======
 >>>>>>> [WIP] Update org.winepak.Sdk (#12)
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
   - name: wine-win32
     only-arches:
@@ -466,11 +509,16 @@ modules:
       - /include
       - /share/man
       - /share/applications
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
+        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
     post-install:
       - rm -rf /usr/share/wine/gecko
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
       - rm -rf /usr/share/wine/mono
       - ln -s /usr/lib/mono /usr/share/wine/mono
+<<<<<<< HEAD
     sources:
       - type: archive
 <<<<<<< HEAD
@@ -482,6 +530,8 @@ modules:
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
       - rm -rf /usr/share/wine/mono
       - ln -s /usr/lib/mono /usr/share/wine/mono
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
       - 
       - mkdir -p /usr/lib/i386-linux-gnu/wine/bin
       - |
@@ -489,6 +539,7 @@ modules:
           mv $i /usr/lib/i386-linux-gnu/wine/bin
           ln -s "/usr/lib/i386-linux-gnu/wine/bin/$(basename $i)" $i
         done
+<<<<<<< HEAD
 =======
         url: https://dl.winehq.org/wine/source/3.0/wine-3.0.1.tar.xz
         sha256: bad00d7ddac6652795a2ed52ce02a544ff4e891499b29ac71d28d20b8e1d26f3
@@ -496,6 +547,8 @@ modules:
 =======
         url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
         sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
+=======
+>>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
 <<<<<<< HEAD
   # Override i386 symlink for /usr/lib/ld-linux.so.2
