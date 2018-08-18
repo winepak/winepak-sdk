@@ -180,6 +180,7 @@ add-extensions:
     autodelete: true
     no-autodownload: true
 
+<<<<<<< HEAD
   org.winepak.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: 3.0
@@ -225,6 +226,8 @@ inherit-extensions:
 
 =======
 >>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
+=======
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
 finish-args:
   - --sdk=org.winepak.Sdk//3.0
   - --runtime=org.winepak.Platform//3.0
@@ -245,24 +248,6 @@ cleanup:
 
 cleanup-commands:
 <<<<<<< HEAD
-  - sh -x /usr/libexec/freedesktop-post.sh
-  - |
-    if [ -L /usr/lib/i386-linux-gnu ]; then
-      rm /usr/lib/i386-linux-gnu
-      mkdir -p /usr/lib/i386-linux-gnu
-    fi
-=======
-  - /usr/libexec/freedesktop-post.sh
->>>>>>> [WIP] Redesign Platform & Sdk
-
-cleanup-platform:
-  - /docs
-  - /include
-  - /share/aclocal
-  - /share/pkgconfig
-  - /lib/pkgconfig
-
-cleanup-platform-commands:
 <<<<<<< HEAD
   - sh -x /usr/libexec/freedesktop-post.sh
   - |
@@ -273,6 +258,32 @@ cleanup-platform-commands:
 =======
   - /usr/libexec/freedesktop-post.sh
 >>>>>>> [WIP] Redesign Platform & Sdk
+=======
+  - sh -x /usr/libexec/freedesktop-post.sh
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
+
+cleanup-platform:
+  - /docs
+  - /include
+  - /share/aclocal
+  - /share/pkgconfig
+  - /lib/pkgconfig
+
+cleanup-platform-commands:
+<<<<<<< HEAD
+<<<<<<< HEAD
+  - sh -x /usr/libexec/freedesktop-post.sh
+  - |
+    if [ -L /usr/lib/i386-linux-gnu ]; then
+      rm /usr/lib/i386-linux-gnu
+      mkdir -p /usr/lib/i386-linux-gnu
+    fi
+=======
+  - /usr/libexec/freedesktop-post.sh
+>>>>>>> [WIP] Redesign Platform & Sdk
+=======
+  - sh -x /usr/libexec/freedesktop-post.sh
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
 
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -296,6 +307,7 @@ modules:
       - mkdir -p /usr/lib/mono
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       - mkdir -p /usr/lib/i386-linux-gnu
 >>>>>>> [WIP] Update org.winepak.Sdk (#12)
@@ -305,6 +317,8 @@ modules:
             mkdir -p /usr/lib/i386-linux-gnu
         fi
 >>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
+=======
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
 
   - name: openldap
     config-opts:
@@ -322,8 +336,11 @@ modules:
 >>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
     sources:
       # OpenLDAP required for Wine
+<<<<<<< HEAD
       # Due to the licencing of BDB v6.* we must stick with OpenLDAP 2.4.46
 >>>>>>> [WIP] Update org.winepak.Sdk (#12)
+=======
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
       # FTP isn't support in flatpak & flatpak-builder so we use he https mirror
       # https://www.openldap.org/software/download/OpenLDAP/openldap-release/
       - type: archive

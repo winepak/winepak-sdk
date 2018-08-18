@@ -64,6 +64,7 @@ add-extensions:
     autodelete: true
     no-autodownload: true
 
+<<<<<<< HEAD
   org.winepak.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: 3.13-staging
@@ -95,6 +96,8 @@ add-extensions:
     download-if: active-gl-driver
     enable-if: active-gl-driver
 
+=======
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
 finish-args:
   - --sdk=org.winepak.Sdk//3.13-staging
   - --runtime=org.winepak.Platform//3.13-staging
@@ -111,11 +114,14 @@ cleanup:
 
 cleanup-commands:
   - sh -x /usr/libexec/freedesktop-post.sh
+<<<<<<< HEAD
   - |
     if [ -L /usr/lib/i386-linux-gnu ]; then
       rm /usr/lib/i386-linux-gnu
       mkdir -p /usr/lib/i386-linux-gnu
     fi
+=======
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
 
 cleanup-platform:
   - /docs
@@ -126,11 +132,14 @@ cleanup-platform:
 
 cleanup-platform-commands:
   - sh -x /usr/libexec/freedesktop-post.sh
+<<<<<<< HEAD
   - |
     if [ -L /usr/lib/i386-linux-gnu ]; then
       rm /usr/lib/i386-linux-gnu
       mkdir -p /usr/lib/i386-linux-gnu
     fi
+=======
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
 
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -149,12 +158,15 @@ modules:
       - mkdir -p /usr/lib/gecko
       - mkdir -p /usr/lib/mono
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       - |
         if [ ! -L "/usr/lib/i386-linux-gnu" ] ; then
             mkdir -p /usr/lib/i386-linux-gnu
         fi
 >>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
+=======
+>>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
 
   - name: openldap
     config-opts:
