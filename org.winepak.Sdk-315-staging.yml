@@ -1,0 +1,276 @@
+build-runtime: true
+
+id: org.winepak.Sdk
+id-platform: org.winepak.Platform
+branch: 3.15-staging
+
+runtime: org.freedesktop.Platform
+runtime-version: 18.08
+sdk: org.freedesktop.Sdk
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Debug
+  - org.freedesktop.Sdk.Locale
+  - org.freedesktop.Sdk.Docs
+
+platform-extensions:
+  - org.freedesktop.Platform.Locale
+
+inherit-sdk-extensions:
+  - org.freedesktop.Sdk.Extension
+
+inherit-extensions:
+  - org.freedesktop.Platform.GL
+  - org.freedesktop.Platform.Timezones
+  - org.freedesktop.Platform.GStreamer
+  - org.freedesktop.Platform.VAAPI.Intel
+
+add-extensions:
+  org.winepak.Sdk.Docs:
+    directory: share/runtime/docs
+    bundle: true
+    autodelete: true
+    no-autodownload: true
+
+  org.winepak.Sdk.Extension:
+    directory: lib/sdk
+    version: 3.15-staging
+    versions: 3.15-staging;3.0
+    subdirectories: true
+    autodelete: true
+    no-autodownload: true
+
+  org.winepak.Platform.Gecko:
+    directory: lib/gecko
+    version: 3.15-staging
+    versions: 3.15-staging;3.0
+    subdirectories: false
+    autodelete: false
+    no-autodownload: false
+
+  org.winepak.Platform.Mono:
+    directory: lib/mono
+    version: 3.15-staging
+    versions: 3.15-staging;3.0
+    subdirectories: false
+    autodelete: false
+    no-autodownload: false
+
+  org.winepak.Platform.Extension:
+    directory: lib/extension
+    version: 3.15-staging
+    versions: 3.15-staging;3.0
+    subdirectories: true
+    autodelete: true
+    no-autodownload: true
+
+  org.winepak.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: 3.15-staging
+    autodelete: true
+    add-ld-path: .
+
+  org.winepak.Platform.Compat.i386.Debug:
+    directory: lib/debug/lib/i386-linux-gnu
+    version: 3.15-staging
+    autodelete: true
+
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/lib/GL
+    version: 1.4
+    versions: 1.6;1.4
+    add-ld-path: lib
+    subdirectories: true
+    autodelete: false
+    no-autodownload: true
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+
+finish-args:
+  - --sdk=org.winepak.Sdk//3.15-staging
+  - --runtime=org.winepak.Platform//3.15-staging
+  - --allow=multiarch
+  - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/wine/bin
+  - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share
+  - --env=WINEDEBUG=-all
+  - --env=WINEPREFIX=/var/data/wine
+
+cleanup:
+  - /docs
+  - /man
+  - /share/man
+
+cleanup-commands:
+  - sh -x /usr/libexec/freedesktop-post.sh
+  - |
+    if [ -L /usr/lib/i386-linux-gnu ]; then
+      rm /usr/lib/i386-linux-gnu
+      mkdir -p /usr/lib/i386-linux-gnu
+    fi
+
+cleanup-platform:
+  - /docs
+  - /include
+  - /share/aclocal
+  - /share/pkgconfig
+  - /lib/pkgconfig
+
+cleanup-platform-commands:
+  - sh -x /usr/libexec/freedesktop-post.sh
+  - |
+    if [ -L /usr/lib/i386-linux-gnu ]; then
+      rm /usr/lib/i386-linux-gnu
+      mkdir -p /usr/lib/i386-linux-gnu
+    fi
+
+build-options:
+  cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  cxxflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  ldflags: -fstack-protector-strong -Wl,-z,relro,-z,now
+  env:
+    V: '1'
+
+modules:
+  - name: platform-setup
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /usr/share/runtime/docs
+      - mkdir -p /usr/lib/sdk
+      - mkdir -p /usr/lib/extension
+      - mkdir -p /usr/lib/gecko
+      - mkdir -p /usr/lib/mono
+
+  - name: openldap
+    config-opts:
+      - --disable-static
+      - --disable-bdb
+      - --disable-hdb
+    sources:
+      # OpenLDAP required for Wine
+      # FTP isn't support in flatpak & flatpak-builder so we use he https mirror
+      # https://www.openldap.org/software/download/OpenLDAP/openldap-release/
+      - type: archive
+        url: https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.46.tgz
+        sha256: 9a90dcb86b99ae790ccab93b7585a31fbcbeec8c94bf0f7ab0ca0a87ea0c4b2d
+
+  - name: cabextract
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://www.cabextract.org.uk/cabextract-1.6.tar.gz
+        sha256: cee661b56555350d26943c5e127fc75dd290b7f75689d5ebc1f04957c4af55fb
+
+  - name: unrar
+    buildsystem: simple
+    build-commands:
+      - make
+      - make install
+    sources:
+      - type: archive
+        url: https://www.rarlab.com/rar/unrarsrc-5.6.4.tar.gz
+        sha256: 9335d2201870f2034007c04be80e00f1dc23932cb88b329d55c76134e6ba49fe
+
+  - name: wine-win64
+    only-arches:
+      - x86_64
+    config-opts:
+      - --enable-win64
+      - --disable-win16
+      - --disable-tests
+      - --with-x
+      - --with-ldap
+      - --without-cups
+      - --without-curses
+      - --without-capi
+      - --without-glu
+      - --without-gphoto
+      - --without-gsm
+      - --without-hal
+      - --without-netapi
+      - --without-opencl
+      - --without-pcap
+      - --without-udev
+      - --without-v4l
+    cleanup:
+      - /share/man
+      - /share/applications
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/3.x/wine-3.15.tar.xz
+        sha256: 2ca2cd95b69f2d89aaa481db34db20cbb249c6aba28ad77ecf383270326ab51e
+      - type: archive
+        url: https://github.com/wine-staging/wine-staging/archive/v3.15.tar.gz
+        sha256: bf209bf102455938ef0b8f678c2c68f134746aef633fbdf56a9c1994309349c4
+      - type: shell
+        commands:
+          - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
+    post-install:
+      - rm -rf /usr/share/wine/gecko
+      - ln -s /usr/lib/gecko /usr/share/wine/gecko
+      - rm -rf /usr/share/wine/mono
+      - ln -s /usr/lib/mono /usr/share/wine/mono
+
+  - name: wine-win32
+    only-arches:
+      - i386
+    config-opts:
+      - --disable-win64
+      - --disable-win16
+      - --disable-tests
+      - --with-x
+      - --with-ldap
+      - --without-cups
+      - --without-curses
+      - --without-capi
+      - --without-glu
+      - --without-gphoto
+      - --without-gsm
+      - --without-hal
+      - --without-netapi
+      - --without-opencl
+      - --without-pcap
+      - --without-udev
+      - --without-v4l
+    cleanup:
+      - /bin/function_grep.pl
+      - /include
+      - /share/man
+      - /share/applications
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/3.x/wine-3.15.tar.xz
+        sha256: 2ca2cd95b69f2d89aaa481db34db20cbb249c6aba28ad77ecf383270326ab51e
+      - type: archive
+        url: https://github.com/wine-staging/wine-staging/archive/v3.15.tar.gz
+        sha256: bf209bf102455938ef0b8f678c2c68f134746aef633fbdf56a9c1994309349c4
+      - type: shell
+        commands:
+          - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
+    post-install:
+      - rm -rf /usr/share/wine/gecko
+      - ln -s /usr/lib/gecko /usr/share/wine/gecko
+      - rm -rf /usr/share/wine/mono
+      - ln -s /usr/lib/mono /usr/share/wine/mono
+      - 
+      - mkdir -p /usr/lib/i386-linux-gnu/wine/bin
+      - |
+        for i in /usr/bin/wine*; do
+          mv $i /usr/lib/i386-linux-gnu/wine/bin
+          ln -s "/usr/lib/i386-linux-gnu/wine/bin/$(basename $i)" $i
+        done
+
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /usr/share/appdata
+      - install org.winepak.Platform.appdata.xml /usr/share/appdata
+      - install org.winepak.Sdk.appdata.xml /usr/share/appdata
+      - appstream-compose --basename=org.winepak.Platform --prefix=/usr --origin=flatpak org.winepak.Platform
+      - appstream-compose --basename=org.winepak.Sdk --prefix=/usr --origin=flatpak org.winepak.Sdk
+    sources:
+      - type: file
+        path: org.winepak.Sdk.appdata.xml
+      - type: file
+        path: org.winepak.Platform.appdata.xml
+
