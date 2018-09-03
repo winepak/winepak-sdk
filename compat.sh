@@ -7,7 +7,7 @@ BUILD_DIR="builds/sdk/${VERSION}-compat"
 
 flatpak remote-add --user winepak-local winepak-local --no-gpg-verify --if-not-exists
 
-flatpak install --user winepak-local --arch=i386 --reinstall "runtime/org.winepak.Platform//${VERSION}"
+flatpak -y install --user winepak-local --arch=i386 --reinstall "runtime/org.winepak.Platform//${VERSION}"
 
 rm -rf ${BUILD_DIR}
 flatpak build-init ${BUILD_DIR} org.winepak.Platform.Compat.i386 org.winepak.Platform/i386 org.winepak.Platform/i386 --type=extension --writable-sdk "${VERSION}"
