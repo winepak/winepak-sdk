@@ -4,129 +4,11 @@ id: org.winepak.Sdk
 id-platform: org.winepak.Platform
 branch: 3.0
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 runtime: org.freedesktop.Platform
 runtime-version: 18.08
 sdk: org.freedesktop.Sdk
 
 sdk-extensions:
-  - org.freedesktop.Sdk.Debug
-  - org.freedesktop.Sdk.Locale
-  - org.freedesktop.Sdk.Docs
-
-platform-extensions:
-  - org.freedesktop.Platform.Locale
-
-inherit-sdk-extensions:
-  - org.freedesktop.Sdk.Extension
-
-inherit-extensions:
-  - org.freedesktop.Platform.GL
-  - org.freedesktop.Platform.Timezones
-  - org.freedesktop.Platform.GStreamer
-  - org.freedesktop.Platform.VAAPI.Intel
-
-=======
-runtime: org.winepak.BasePlatform
-runtime-version: 3.0
-sdk: org.winepak.BaseSdk
-=======
-runtime: org.freedesktop.Platform
-runtime-version: 18.08
-sdk: org.freedesktop.Sdk
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
-
-<<<<<<< HEAD
->>>>>>> [WIP] Redesign Platform & Sdk
-add-extensions:
-  org.winepak.Sdk.Docs:
-    directory: share/runtime/docs
-    bundle: true
-    autodelete: true
-    no-autodownload: true
-
-  org.winepak.Sdk.Extension:
-    directory: lib/sdk
-    version: 3.0
-    subdirectories: true
-    autodelete: true
-    no-autodownload: true
-
-  org.winepak.Platform.Gecko:
-    directory: lib/gecko
-    version: 3.0
-    versions: 3.0
-    subdirectories: false
-    autodelete: false
-    no-autodownload: false
-
-<<<<<<< HEAD
-  org.winepak.Platform.Mono:
-    directory: lib/mono
-=======
-  org.freedesktop.Platform.GL32:
-    directory: lib/32bit/lib/GL
-    version: 1.4
-    versions: 1.6;1.4
-    subdirectories: true
-    no-autodownload: true
-    autodelete: false
-    add-ld-path: lib
-    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
-    download-if: active-gl-driver
-    enable-if: active-gl-driver
-
-  org.winepak.Platform.Wine:
-    directory: lib/wine
->>>>>>> Add org.freedesktop.Platform.GL32 extension for 32bit nvidia libGL support on 64bit environment
-    version: 3.0
-    versions: 3.0
-    subdirectories: false
-    autodelete: false
-    no-autodownload: false
-
-  org.winepak.Platform.Extension:
-    directory: lib/extension
-    version: 3.0
-    subdirectories: true
-    autodelete: true
-    no-autodownload: true
-
-  org.winepak.Platform.Compat.i386:
-    directory: lib/i386-linux-gnu
-    version: 3.0
-    autodelete: true
-    add-ld-path: .
-
-<<<<<<< HEAD
-  org.winepak.Platform.Compat.i386.Debug:
-    directory: lib/debug/lib/i386-linux-gnu
-    version: 3.0
-    autodelete: true
-
-  org.freedesktop.Platform.GL32:
-    directory: lib/i386-linux-gnu/lib/GL
-    version: 1.4
-    versions: 1.6;1.4
-    add-ld-path: lib
-    subdirectories: true
-    autodelete: false
-    no-autodownload: true
-    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
-    download-if: active-gl-driver
-    enable-if: active-gl-driver
-=======
-platform-extensions:
-  - org.freedesktop.Platform.Locale
-=======
-sdk-extensions:
-<<<<<<< HEAD
-  - org.winepak.BaseSdk.Debug
-  - org.winepak.BaseSdk.Locale
-  - org.winepak.BaseSdk.Docs
->>>>>>> [WIP] Redesign Platform & Sdk
-=======
   - org.freedesktop.Sdk.Debug
   - org.freedesktop.Sdk.Locale
   - org.freedesktop.Sdk.Docs
@@ -180,17 +62,6 @@ add-extensions:
     autodelete: true
     no-autodownload: true
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  org.winepak.Platform.Compat.i386:
-    directory: lib/i386-linux-gnu
-    version: 3.0
-    versions: 3.0
-    add-ld-path: lib
-    subdirectories: false
-    autodelete: false
-    no-autodownload: false
-=======
   org.winepak.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: 3.0
@@ -201,7 +72,6 @@ add-extensions:
     directory: lib/debug/lib/i386-linux-gnu
     version: 3.0
     autodelete: true
->>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
   org.freedesktop.Platform.GL32:
     directory: lib/i386-linux-gnu/lib/GL
@@ -215,48 +85,11 @@ add-extensions:
     download-if: active-gl-driver
     enable-if: active-gl-driver
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-platform-extensions:
-  - org.freedesktop.Platform.Locale
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
-
-inherit-extensions:
-<<<<<<< HEAD
-  - org.winepak.BaseSdk.Docs
-  - org.winepak.BaseSdk.Extension
-  - org.winepak.BasePlatform.Compat.i386
-  - org.winepak.BasePlatform.Gecko
-  - org.winepak.BasePlatform.Mono
-  - org.winepak.BasePlatform.Extension
->>>>>>> [WIP] Redesign Platform & Sdk
-=======
-  - org.freedesktop.Sdk.Extension
-  - org.freedesktop.Platform.GL
-  - org.freedesktop.Platform.Timezones
-  - org.freedesktop.Platform.GStreamer
-  - org.freedesktop.Platform.VAAPI.Intel
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
-
-=======
->>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
-=======
->>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
-=======
->>>>>>> WIP: Fix i386 builds by building wine in correct directory
 finish-args:
   - --sdk=org.winepak.Sdk//3.0
   - --runtime=org.winepak.Platform//3.0
   - --allow=multiarch
-<<<<<<< HEAD
-<<<<<<< HEAD
   - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/wine/bin
-=======
-  - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/bin
->>>>>>> [WIP] Redesign Platform & Sdk
-=======
-  - --env=PATH=/app/bin:/usr/bin:/usr/lib/i386-linux-gnu/wine/bin
->>>>>>> WIP: Fix i386 builds by building wine in correct directory
   - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share
   - --env=WINEDEBUG=-all
   - --env=WINEPREFIX=/var/data/wine
@@ -267,28 +100,12 @@ cleanup:
   - /share/man
 
 cleanup-commands:
-<<<<<<< HEAD
-<<<<<<< HEAD
   - sh -x /usr/libexec/freedesktop-post.sh
   - |
     if [ -L /usr/lib/i386-linux-gnu ]; then
       rm /usr/lib/i386-linux-gnu
       mkdir -p /usr/lib/i386-linux-gnu
     fi
-=======
-  - /usr/libexec/freedesktop-post.sh
->>>>>>> [WIP] Redesign Platform & Sdk
-=======
-  - sh -x /usr/libexec/freedesktop-post.sh
-<<<<<<< HEAD
->>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
-=======
-  - |
-    if [ -L /usr/lib/i386-linux-gnu ]; then
-      rm /usr/lib/i386-linux-gnu
-      mkdir -p /usr/lib/i386-linux-gnu
-    fi
->>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
 cleanup-platform:
   - /docs
@@ -298,28 +115,12 @@ cleanup-platform:
   - /lib/pkgconfig
 
 cleanup-platform-commands:
-<<<<<<< HEAD
-<<<<<<< HEAD
   - sh -x /usr/libexec/freedesktop-post.sh
   - |
     if [ -L /usr/lib/i386-linux-gnu ]; then
       rm /usr/lib/i386-linux-gnu
       mkdir -p /usr/lib/i386-linux-gnu
     fi
-=======
-  - /usr/libexec/freedesktop-post.sh
->>>>>>> [WIP] Redesign Platform & Sdk
-=======
-  - sh -x /usr/libexec/freedesktop-post.sh
-<<<<<<< HEAD
->>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
-=======
-  - |
-    if [ -L /usr/lib/i386-linux-gnu ]; then
-      rm /usr/lib/i386-linux-gnu
-      mkdir -p /usr/lib/i386-linux-gnu
-    fi
->>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
 build-options:
   cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
@@ -329,10 +130,6 @@ build-options:
     V: '1'
 
 modules:
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
   - name: platform-setup
     buildsystem: simple
     build-commands:
@@ -341,76 +138,19 @@ modules:
       - mkdir -p /usr/lib/extension
       - mkdir -p /usr/lib/gecko
       - mkdir -p /usr/lib/mono
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      - mkdir -p /usr/lib/i386-linux-gnu
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
-=======
-      - |
-        if [ ! -L "/usr/lib/i386-linux-gnu" ] ; then
-            mkdir -p /usr/lib/i386-linux-gnu
-        fi
->>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
-=======
->>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
 
   - name: openldap
     config-opts:
       - --disable-static
-<<<<<<< HEAD
-<<<<<<< HEAD
       - --disable-bdb
       - --disable-hdb
     sources:
       # OpenLDAP required for Wine
-=======
-=======
-      - --disable-bdb
-      - --disable-hdb
->>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
-    sources:
-      # OpenLDAP required for Wine
-<<<<<<< HEAD
-      # Due to the licencing of BDB v6.* we must stick with OpenLDAP 2.4.46
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
-=======
->>>>>>> WIP: Remove runtime mount points for Compat.i386 + clean-ups
       # FTP isn't support in flatpak & flatpak-builder so we use he https mirror
       # https://www.openldap.org/software/download/OpenLDAP/openldap-release/
       - type: archive
         url: https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.46.tgz
         sha256: 9a90dcb86b99ae790ccab93b7585a31fbcbeec8c94bf0f7ab0ca0a87ea0c4b2d
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    modules:
-      - name: BDB
-        config-opts:
-          - --enable-compat185
-          - --enable-shared
-          - --enable-static
-          - --enable-cxx
-          - --enable-dbm
-          - --enable-stl
-        make-install-args:
-          - LIBSO_LIBS=-lpthread
-        sources:
-            # Bereley DB required for OpenLDAP
-            # Due to licencing v6.* will not work with later versions of OpenLDAP
-            # and for that matter a lot of other software. Stick to v5.3.28
-            # http://www.oracle.com/technetwork/products/berkeleydb/downloads/index-082944.html
-          - type: archive
-            url: http://download.oracle.com/berkeley-db/db-5.3.28.tar.gz
-            sha256: e0a992d740709892e81f9d93f06daf305cf73fb81b545afe72478043172c3628
-          - type: script
-            dest-filename: configure
-            commands:
-            - "./dist/configure $@"
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
-=======
->>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
 
   - name: cabextract
     buildsystem: autotools
@@ -429,11 +169,6 @@ modules:
         url: https://www.rarlab.com/rar/unrarsrc-5.6.4.tar.gz
         sha256: 9335d2201870f2034007c04be80e00f1dc23932cb88b329d55c76134e6ba49fe
 
-<<<<<<< HEAD
-=======
->>>>>>> [WIP] Redesign Platform & Sdk
-=======
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
   - name: wine-win64
     only-arches:
       - x86_64
@@ -467,21 +202,6 @@ modules:
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
       - rm -rf /usr/share/wine/mono
       - ln -s /usr/lib/mono /usr/share/wine/mono
-<<<<<<< HEAD
-    sources:
-      - type: archive
-        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
-        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
-<<<<<<< HEAD
-    post-install:
-      - rm -rf /usr/share/wine/gecko
-      - ln -s /usr/lib/gecko /usr/share/wine/gecko
-      - rm -rf /usr/share/wine/mono
-      - ln -s /usr/lib/mono /usr/share/wine/mono
-=======
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
-=======
->>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
   - name: wine-win32
     only-arches:
@@ -518,20 +238,6 @@ modules:
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
       - rm -rf /usr/share/wine/mono
       - ln -s /usr/lib/mono /usr/share/wine/mono
-<<<<<<< HEAD
-    sources:
-      - type: archive
-<<<<<<< HEAD
-<<<<<<< HEAD
-        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
-        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
-    post-install:
-      - rm -rf /usr/share/wine/gecko
-      - ln -s /usr/lib/gecko /usr/share/wine/gecko
-      - rm -rf /usr/share/wine/mono
-      - ln -s /usr/lib/mono /usr/share/wine/mono
-=======
->>>>>>> WIP: Fix i386 builds by building wine in correct directory
       - 
       - mkdir -p /usr/lib/i386-linux-gnu/wine/bin
       - |
@@ -539,43 +245,7 @@ modules:
           mv $i /usr/lib/i386-linux-gnu/wine/bin
           ln -s "/usr/lib/i386-linux-gnu/wine/bin/$(basename $i)" $i
         done
-<<<<<<< HEAD
-=======
-        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.1.tar.xz
-        sha256: bad00d7ddac6652795a2ed52ce02a544ff4e891499b29ac71d28d20b8e1d26f3
->>>>>>> [WIP] Redesign Platform & Sdk
-=======
-        url: https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz
-        sha256: cad771375409e24244eab252da044306158af8a8bea4432e7ca81c1dc6b463ff
-=======
->>>>>>> WIP: Fix i386 builds by building wine in correct directory
 
-<<<<<<< HEAD
-  # Override i386 symlink for /usr/lib/ld-linux.so.2
-  # In general we don't want to override things from the freedesktop Sdk and 
-  # Platform but, consider winepak solves a unique case we'll make an exception.
-  # 
-  # Normal /usr/lib/ld-linux.so.2 is installed by coping a special ld-linux.so.2
-  # from /usr/lib/extra-links/*. The ld-linux.so.2 found in that directory is a 
-  # symlink to /app/lib/ld-linux.so.2 which we then override in each application.
-  #
-  # wine64 is basically worthless without wine32 so we load our own Compat.i386 
-  # extension in the runtime and point /usr/lib/ld-linux.so.2 to our own mount 
-  # point at /usr/lib/i386-linux-gnu/lib/ld-linux.so.2
-  - name: lib32-i386-symlink
-    only-arches:
-      - x86_64
-    buildsystem: simple
-    build-commands: []
-    sources:
-      - type: shell
-        commands:
-          - mkdir -p /usr/lib/extra-links
-          - ln -s -f /usr/lib/i386-linux-gnu/lib/ld-linux.so.2 /usr/lib/extra-links/ld-linux.so.2
->>>>>>> [WIP] Update org.winepak.Sdk (#12)
-
-=======
->>>>>>> WIP: Remove BDB from OpenLDAP, remove automatic Compat.i386, and clean-ups
   - name: metainfo
     buildsystem: simple
     build-commands:
