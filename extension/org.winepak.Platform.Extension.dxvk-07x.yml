@@ -1,6 +1,6 @@
 build-extension: true
 
-id: org.winepak.Platform.Extension.dxvk-06x
+id: org.winepak.Platform.Extension.dxvk-07x
 branch: 3.0
 
 runtime: org.winepak.Platform
@@ -20,10 +20,8 @@ modules:
       - install -Dm0644 x64/*.dll ${FLATPAK_DEST}/x64
     sources:
       - type: archive
-        url: https://github.com/doitsujin/dxvk/releases/download/v0.65/dxvk-0.65.tar.gz
-        sha256: 7b4eb42e693f925d0aff90bae261b20c50428602382ee94a3e3860b2ad1ebad0
-      - type: patch
-        path: patch/fix-dxvk-setup.patch
+        url: https://github.com/doitsujin/dxvk/releases/download/v0.71/dxvk-0.71.tar.gz
+        sha256: fbe66337d1450f366961a7699253cd7a96c12a88c2fcda64b79be1cbb13d37d5
 
   - name: scripts
     buildsystem: simple
@@ -110,8 +108,8 @@ modules:
   - name: metainfo
     buildsystem: simple
     build-commands:
-      - install -Dm0644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.dxvk-06x.metainfo.xml
-      - appstream-compose --basename=org.winepak.Platform.Extension.dxvk-06x --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.dxvk-06x
+      - install -Dm0644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.dxvk-07x.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.dxvk-07x --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.dxvk-07x
     sources:
       - type: file
-        path: org.winepak.Platform.Extension.dxvk-06x.metainfo.xml
+        path: org.winepak.Platform.Extension.dxvk-07x.metainfo.xml

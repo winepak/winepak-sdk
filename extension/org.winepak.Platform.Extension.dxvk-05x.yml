@@ -14,15 +14,10 @@ modules:
   - name: dxvk
     buildsystem: simple
     build-commands:
-      - install -d ${FLATPAK_DEST}/bin/
-      - install -d ${FLATPAK_DEST}/x32/
-      - install -d ${FLATPAK_DEST}/x64/
-      - install -D x32/setup_dxvk.sh ${FLATPAK_DEST}/x32/setup_dxvk.sh
-      - install -D x64/setup_dxvk.sh ${FLATPAK_DEST}/x64/setup_dxvk.sh
-      - install -D x32/d3d11.dll ${FLATPAK_DEST}/x32/d3d11.dll
-      - install -D x64/d3d11.dll ${FLATPAK_DEST}/x64/d3d11.dll
-      - install -D x32/dxgi.dll ${FLATPAK_DEST}/x32/dxgi.dll
-      - install -D x64/dxgi.dll ${FLATPAK_DEST}/x64/dxgi.dll
+      - mkdir -p ${FLATPAK_DEST}/x32
+      - mkdir -p ${FLATPAK_DEST}/x64
+      - install -Dm0644 x32/*.dll ${FLATPAK_DEST}/x32
+      - install -Dm0644 x64/*.dll ${FLATPAK_DEST}/x64
     sources:
       - type: archive
         url: https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz
@@ -33,7 +28,8 @@ modules:
   - name: scripts
     buildsystem: simple
     build-commands:
-      - install dxvk-install* ${FLATPAK_DEST}/bin
+      - mkdir -p ${FLATPAK_DEST}/bin
+      - install -Dm0755 dxvk-install* ${FLATPAK_DEST}/bin
     sources:
       - type: script
         only-arches:
@@ -46,8 +42,22 @@ modules:
           - fi
           -
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - unix_sys_path="$(wine64 winepath -u 'C:\windows\system32')"
+          - if [ $? -ne 0 ]; then
+          - '    echo "Error while retrieving unix path for "C:\windows\system32", abort."'
+          - '    exit 1'
+          - fi
           -
-          - . ${EXTENSION_DIR}/x64/setup_dxvk.sh -y
+          - for dll in ${EXTENSION_DIR}/x64/*.dll; do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          -
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native"'
+          - '    wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v $name /d native /f'
+          - '    ln -sf $dll $unix_sys_path/$filename'
+          - done
       - type: script
         only-arches:
           - x86_64
@@ -66,8 +76,8 @@ modules:
           - fi
           -
           - for dll in ${EXTENSION_DIR}/x32/*.dll; do
-          - '    name=${dll##*/}'
-          - '    ln -sf $dll $unix_sys_path/$name'
+          - '    filename=${dll##*/}'
+          - '    ln -sf $dll $unix_sys_path/$filename'
           - done
       - type: script
         only-arches:
@@ -80,13 +90,27 @@ modules:
           - fi
           -
           - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - unix_sys_path="$(wine winepath -u 'C:\windows\system32')"
+          - if [ $? -ne 0 ]; then
+          - '    echo "Error while retrieving unix path for "C:\windows\system32", abort."'
+          - '    exit 1'
+          - fi
           -
-          - . ${EXTENSION_DIR}/x32/setup_dxvk.sh -y
+          - for dll in ${EXTENSION_DIR}/x32/*.dll; do
+          - '    filename=${dll##*/}'
+          - '    name=${filename%.dll}'
+          -
+          - '    echo "[REGEDIT] Adding:"'
+          - '    echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '    echo "${name}=native"'
+          - '    wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v $name /d native /f'
+          - '    ln -sf $dll $unix_sys_path/$filename'
+          - done
 
   - name: metainfo
     buildsystem: simple
     build-commands:
-      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.dxvk-05x.metainfo.xml
+      - install -Dm0644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.dxvk-05x.metainfo.xml
       - appstream-compose --basename=org.winepak.Platform.Extension.dxvk-05x--prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.dxvk-05x
     sources:
       - type: file
