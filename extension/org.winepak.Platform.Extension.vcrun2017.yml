@@ -23,14 +23,14 @@ modules:
         only-arches:
           - x86_64
         url: https://aka.ms/vs/15/release/vc_redist.x64.exe
-        size: 15244952
-        sha256: 9abf3a1386584ea0e4b31198cc56e988e13e67ccdb1137ec6e18e883753d2ddb
+        size: 15183048
+        sha256: 42a559f2be251b5f3c685597b99e4dee763b16a01f70bd7b1e92f6eb91cbb80c
         filename: vc_redist.x64.exe
       # https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
       - type: extra-data
         url: https://aka.ms/vs/15/release/vc_redist.x86.exe
-        size: 14611496
-        sha256: eb5f74215e4308d8f2b1d458e78f33050a779b9be19baaa2174de1be9be1b830
+        size: 14500216
+        sha256: b194c31198e681a94ab1744d7704716cfc6e05cdef157ab60367284192f6c088
         filename: vc_redist.x86.exe
       - type: script
         only-arches:
