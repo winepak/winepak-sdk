@@ -1,0 +1,165 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.directplay
+branch: 3.0
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: directplay
+    buildsystem: simple
+    build-commands:
+      - install -d ${FLATPAK_DEST}/bin
+      - install apply_extra* ${FLATPAK_DEST}/bin
+      - install apply_extra ${FLATPAK_DEST}/bin
+    sources:
+      - type: extra-data
+        url: https://download.microsoft.com/download/E/E/1/EE17FF74-6C45-4575-9CF4-7FC2597ACD18/directx_feb2010_redist.exe
+        size: 109072752
+        sha256: f6d191e89a963d7cca34f169d30f49eab99c1ed3bb92da73ec43617caaa1e93f
+        filename: directplay.exe
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - /app/bin/apply_extra
+          - ''
+          - rm directplay.exe
+          - rm -rf cabs/
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - mkdir -p cabs
+          - cabextract -d cabs/ -L -F "*dxnt*" directplay.exe
+          - ''
+          - mkdir -p dlls
+          - '  cabextract -d dlls/ -L -F "dplaysvr.exe" "cabs/dxnt.cab"'
+          - '  cabextract -d dlls/ -L -F "dplayx.dll" "cabs/dxnt.cab"'
+          - '  cabextract -d dlls/ -L -F "dpnet.dll" "cabs/dxnt.cab"'
+          - '  cabextract -d dlls/ -L -F "dpnhpast.dll" "cabs/dxnt.cab"'
+          - '  cabextract -d dlls/ -L -F "dpnsvr.exe" "cabs/dxnt.cab"'
+          - '  cabextract -d dlls/ -L -F "dpwsockx.dll" "cabs/dxnt.cab"'
+  - name: scripts
+    buildsystem: simple
+    build-commands:
+      - install directplay-install* ${FLATPAK_DEST}/bin
+    sources:
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: directplay-install64
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/* "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - ''
+          - for dll in ${EXTENSION_DIR}/extra/dlls/*.dll
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.dll}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+          - for dll in ${EXTENSION_DIR}/extra/syswow64/dpnsvr.exe
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.exe}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+      - type: script
+        only-arches:
+          - x86_64
+        dest-filename: directplay-install64-wow64
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    echo "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - cp ${EXTENSION_DIR}/extra/dlls/* "${WINEPREFIX}/dosdevices/c:/windows/syswow64/"
+          - ''
+          - for dll in ${EXTENSION_DIR}/extra/dlls/*.dll
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.dll}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+          - for dll in ${EXTENSION_DIR}/extra/syswow64/dpnsvr.exe
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.exe}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine64 reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+
+      - type: script
+        only-arches:
+          - i386
+        dest-filename: directplay-install32
+        commands:
+          - if [ -z "$WINEPREFIX" ] ; then
+          - '    "No wine prefix set or is empty, abort."'
+          - '    exit 1'
+          - fi
+          - ''
+          - EXTENSION_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
+          - ''
+          - mkdir -p "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - cp ${EXTENSION_DIR}/extra/dlls/*.dll "${WINEPREFIX}/dosdevices/c:/windows/system32/"
+          - ''
+          - for dll in ${EXTENSION_DIR}/extra/dlls/*.dll
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.dll}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+          - for dll in ${EXTENSION_DIR}/extra/dlls/dpnsvr.exe
+          - do
+          - '   filename=${dll##*/}'
+          - '   name=${filename%.exe}'
+          - ''
+          - '   echo "[REGEDIT] Adding:"'
+          - '   echo "HKEY_CURRENT_USER\Software\Wine\DllOverrides"'
+          - '   echo "*${name}=native"'
+          - '   wine reg add ''HKEY_CURRENT_USER\Software\Wine\DllOverrides'' /v *${name} /d native /f'
+          - done
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.directplay.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.directplay --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.directplay
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.directplay.metainfo.xml
+
