@@ -1,6 +1,6 @@
 uild-extension: true
 
-id: org.winepak.Platform.Extension.libtxc_dtn
+id: org.winepak.Platform.Extension.libtxc_dxtn
 branch: 3.0
 
 runtime: org.winepak.Platform
@@ -44,8 +44,8 @@ modules:
   - name: metainfo
     buildsystem: simple
     build-commands:
-      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo/ org.winepak.Platform.Extension.libtxc_dtn.metainfo.xml
-      - appstream-compose --basename=org.winepak.Platform.Extension.libtxc_dtn --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.libtxc_dtn
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo/ org.winepak.Platform.Extension.libtxc_dxtn.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.libtxc_dxtn --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.libtxc_dxtn
     sources:
       - type: file
-        path: org.winepak.Platform.Extension.libtxc_dtn.metainfo.xml
+        path: org.winepak.Platform.Extension.libtxc_dxtn.metainfo.xml
