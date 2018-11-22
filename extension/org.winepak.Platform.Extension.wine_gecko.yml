@@ -1,0 +1,36 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.wine_gecko
+branch: 2.47
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: wine-gecko
+    buildsystem: simple
+    build-commands:
+      - install -D --target-directory=/usr/share/wine/gecko/ wine_gecko-*.msi
+    no-make-install: true
+    sources:
+      - type: file
+        only-arches:
+          - x86_64
+        url: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
+        sha256: c565ea25e50ea953937d4ab01299e4306da4a556946327d253ea9b28357e4a7d
+      - type: file
+        url: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
+        sha256: 3b8a361f5d63952d21caafd74e849a774994822fb96c5922b01d554f1677643a
+
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.wine_gecko.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.wine_gecko --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.wine_gecko
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.wine_gecko.metainfo.xml

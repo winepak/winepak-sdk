@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+    <id>org.winepak.Platform.Extension.mono</id>
+    <extends>org.winepak.Platform.desktop</extends>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>LicenseRef-proprietary</project_license>
+    <name>mono</name>
+    <summary>Add mono the opensource dot.net replacment to an application</summary>
+</component>
