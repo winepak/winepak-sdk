@@ -1,0 +1,36 @@
+uild-extension: true
+
+id: org.winepak.Platform.Extension.libtxc_dtn
+branch: 3.0
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: libtxc_dxtn
+    only-arches:
+      - x86_64
+    config-opts:
+      - --disable-static
+      - --enable-shared
+    sources:
+      -type: archive
+       url: https://people.freedesktop.org/~cbrill/libtxc_dxtn/libtxc_dxtn-1.0.1.tar.bz2
+       sha256: 45290d12cdca529a3f41e7fc35c4250fc1b6d2fc16b56680f8401f6aa792ae60
+      
+    cleanup:
+      - /include
+      - /share/man
+      
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.libtxc_dtn.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.libtxc_dtn --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.libtxc_dtn
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.libtxc_dtn.metainfo.xml
