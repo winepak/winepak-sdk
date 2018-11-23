@@ -1,3 +1,5 @@
+.circleci
 .flatpak-builder
 builds
 winepak
+winepak-repo

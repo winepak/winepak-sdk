@@ -1,0 +1,31 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.mono
+branch: 4.7.1
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+modules:
+  - name: wine-mono
+    buildsystem: simple
+    build-commands:
+      - install -D --target-directory=/usr/share/wine/mono/ wine-mono-*.msi
+    no-make-install: true
+    sources:
+    - type: file
+      url: https://dl.winehq.org/wine/wine-mono/4.7.1/wine-mono-4.7.1.msi
+      sha256: 2c8d5db7f833c3413b2519991f5af1f433d59a927564ec6f38a3f1f8b2c629aa
+
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.mono.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.mono --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.mono
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.mono.metainfo.xml
