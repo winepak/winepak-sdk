@@ -74,7 +74,7 @@ add-extensions:
     autodelete: true
 
   org.freedesktop.Platform.GL32:
-    directory: lib/i386-linux-gnu/lib/GL
+    directory: lib/i386-linux-gnu/GL
     version: 1.4
     versions: 1.6;1.4
     add-ld-path: lib
