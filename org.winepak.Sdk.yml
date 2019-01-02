@@ -207,6 +207,32 @@ modules:
       - ln -s /usr/lib/gecko /usr/share/wine/gecko
       - rm -rf /usr/share/wine/mono
       - ln -s /usr/lib/mono /usr/share/wine/mono
+      - |
+        case $FLATPAK_ARCH in
+          x86_64)
+            mv $FLATPAK_DEST/bin/wineserver{,64}
+          ;;
+          i386)
+            mv $FLATPAK_DEST/bin/wineserver{,32}
+          ;;
+        esac
+
+  - name: wineserver-wrapper
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 wineserver.sh /usr/bin/wineserver
+    sources:
+      - type: script
+        dest-filename: wineserver.sh
+        commands:
+          - |
+            if command -v wineserver64; then
+              exec wineserver64 $@
+            elif command -v wineserver32; then
+              exec wineserver32 $@
+            else
+              exit 1
+            fi
 
   - name: wine-compat
     only-arches:
