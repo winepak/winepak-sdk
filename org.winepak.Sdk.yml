@@ -128,6 +128,11 @@ build-options:
   ldflags: -fstack-protector-strong -Wl,-z,relro,-z,now
   env:
     V: '1'
+  arch:
+    x86_64:
+      libdir: /usr/lib/x86_64-linux-gnu
+    i386:
+      libdir: /usr/lib/i386-linux-gnu
 
 modules:
   - name: platform-setup
