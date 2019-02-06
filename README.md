@@ -15,8 +15,8 @@ Remember run all `flatpak` commands as a user, root and `sudo` are not needed.
 First you need the base `org.freedesktop.Sdk` and `org.freedesktop.Platform` from [`flathub.org`](https://flathub.org).
 
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    flatpak install flathub org.freedesktop.Sdk
-    flatpak install flathub org.freedesktop.Platform
+    flatpak install flathub org.freedesktop.Sdk//1.6 <!-- Expeccted from org.winepak.Sdk -->
+    flatpak install flathub org.freedesktop.Platform//1.6
 
 ### New repo
 Now we link the repo which stores the `winepak` builds, which will be called `winepak`. It will also create a directory called `winepak` in the directory the command was called.
