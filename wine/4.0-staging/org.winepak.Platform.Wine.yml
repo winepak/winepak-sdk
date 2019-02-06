@@ -1,0 +1,105 @@
+build-extension: true
+
+id: org.winepak.Platform.Wine
+branch: 4.0-staging # Sane?
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false
+appstream-compose: false
+
+cleanup:
+  - /man
+  - /share/man
+
+build-options:
+  cflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  cxxflags: -O2 -g -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  ldflags: -fstack-protector-strong -Wl,-z,relro,-z,now
+  prefix: "${FLATPAK_DEST}"
+  env:
+    V: '1'
+
+modules:
+  - name: wine-staging-win64
+    only-arches:
+      - x86_64
+    config-opts:
+      - --enable-win64
+      - --disable-win16
+      - --disable-tests
+      - --with-x
+      - --with-ldap
+      - --with-netapi
+      - --without-cups
+      - --without-curses
+      - --without-capi
+      - --without-glu
+      - --without-gphoto
+      - --without-gsm
+      - --without-hal
+      - --without-opencl
+      - --without-pcap
+      - --without-udev
+      - --without-v4l
+    cleanup:
+      - /share/man
+      - /share/applications
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/4.0/wine-4.0.tar.xz # From https://dl.winehq.org/wine/source/4.0/
+        sha256: 6736cdee95b2b8bb021ec0c19497ed8cad5ae2c8bfdb7ab5dc687ff92a480d4d # From https://www.virustotal.com/#/file/6736cdee95b2b8bb021ec0c19497ed8cad5ae2c8bfdb7ab5dc687ff92a480d4d/detection
+      - type: archive
+        url: https://github.com/wine-staging/wine-staging/archive/v4.0.tar.gz # From https://github.com/wine-staging/wine-staging/releases/tag/v4.0
+        sha256: 12f7d1e46f06ed56b4b409b7f40e47622d84262e7e78cfc02f19c0cdd8b03788 # From https://www.virustotal.com/#/file-analysis/ZjkyOTMyMGI0NmFlMmQxNDIyNGUzZDhhNDU3NjY0ZTk6MTU0OTQ2MzYwMw==
+      - type: shell
+        commands:
+          - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
+
+  - name: wine-staging-win32
+    only-arches:
+      - i386
+    config-opts:
+      - --disable-win64
+      - --disable-win16
+      - --disable-tests
+      - --with-x
+      - --with-ldap
+      - --with-netapi
+      - --without-cups
+      - --without-curses
+      - --without-capi
+      - --without-glu
+      - --without-gphoto
+      - --without-gsm
+      - --without-hal
+      - --without-opencl
+      - --without-pcap
+      - --without-udev
+    cleanup:
+      - /bin/function_grep.pl
+      - /include
+      - /share/man
+      - /share/applications
+    sources:
+      - type: archive
+         url: https://dl.winehq.org/wine/source/4.0/wine-4.0.tar.xz # From https://dl.winehq.org/wine/source/4.0/
+        sha256: 6736cdee95b2b8bb021ec0c19497ed8cad5ae2c8bfdb7ab5dc687ff92a480d4d # From https://www.virustotal.com/#/file/6736cdee95b2b8bb021ec0c19497ed8cad5ae2c8bfdb7ab5dc687ff92a480d4d/detection
+      - type: archive
+        url: https://github.com/wine-staging/wine-staging/archive/v4.0.tar.gz # From https://github.com/wine-staging/wine-staging/releases/tag/v4.0
+        sha256: 12f7d1e46f06ed56b4b409b7f40e47622d84262e7e78cfc02f19c0cdd8b03788 # From https://www.virustotal.com/#/file-analysis/ZjkyOTMyMGI0NmFlMmQxNDIyNGUzZDhhNDU3NjY0ZTk6MTU0OTQ2MzYwMw==
+      - type: shell
+        commands:
+          - ./patches/patchinstall.sh DESTDIR=$(pwd) --all
+
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Wine.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Wine --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Wine
+    sources:
+      - type: file
+        path: org.winepak.Platform.Wine.metainfo.xml
+
