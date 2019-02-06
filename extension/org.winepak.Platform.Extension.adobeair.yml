@@ -1,0 +1,42 @@
+build-extension: true
+
+id: org.winepak.Platform.Extension.adobeair
+branch: master # Sane?
+
+runtime: org.winepak.Platform
+runtime-version: 3.0
+sdk: org.winepak.Sdk
+
+separate-locales: false # What is this?
+appstream-compose: false # What is this?
+
+
+# Get Source
+modules:
+  - name: adobeair
+    buildsystem: simple
+    build-commands:
+      - install -d ${FLATPAK_DEST}/bin # Where is FLATPAK_DEST?
+    sources:
+    # https://get.adobe.com/air/download/?installer=Adobe_AIR_32.0_for_Win64&stype=7469&standalone=1
+    ## From https://get.adobe.com/air/
+      - type: extra-data # What is extra-data?
+        only-arches:
+          - x86_64
+        url: https://get.adobe.com/air/download/?installer=Adobe_AIR_32.0_for_Win64&stype=7469&standalone=1
+        size: 11536984 # In bytes
+        sha256: 24532d41ef2588c0daac4b6f8b7f863ee3c1a1b1e90b2d8d8b3eb4faa657e5e3 # From https://www.virustotal.com/#/file/24532d41ef2588c0daac4b6f8b7f863ee3c1a1b1e90b2d8d8b3eb4faa657e5e3/detection
+        filename: AdobeAIRInstaller.exe --silent # Sane? # From https://www.virustotal.com/#/file/24532d41ef2588c0daac4b6f8b7f863ee3c1a1b1e90b2d8d8b3eb4faa657e5e3/detection
+
+# Execute in silent mode
+## GUI works only on winxp https://github.com/Winetricks/winetricks/issues/821
+
+  # Get metainfo
+  - name: metainfo
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 --target-directory=${FLATPAK_DEST}/share/metainfo org.winepak.Platform.Extension.adobeair.metainfo.xml
+      - appstream-compose --basename=org.winepak.Platform.Extension.adobeair --prefix=${FLATPAK_DEST} --origin=flatpak org.winepak.Platform.Extension.adobeair
+    sources:
+      - type: file
+        path: org.winepak.Platform.Extension.adobeair
