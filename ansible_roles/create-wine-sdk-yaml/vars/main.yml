@@ -1,0 +1,4 @@
+---
+# vars file for create-wine-sdk-yaml
+metainfo_filename: "org.winepak.Platform.Wine.metainfo.xml"
+build_filename: "org.winepak.Platform.Wine.yml"

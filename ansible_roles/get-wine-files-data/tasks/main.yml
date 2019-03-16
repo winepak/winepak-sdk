@@ -1,0 +1,41 @@
+---
+# tasks file for get_wine_files_data
+- name: Generate Wine-staging src file URL
+  set_fact:
+    wine_staging_url: "{{ wine_staging_url_base }}/{{ tag_name }}.tar.gz"
+
+- name: Generate the Wine src file URL
+  set_fact:
+    wine_src_url: "{{ wine_url_base }}/{{ tag_name[1] }}.x/wine-{{ tag_name[1:] }}.tar.xz"
+
+- name: Download wine-staging patches file
+  get_url:
+    url: "{{ wine_staging_url }}"
+    dest: "{{ wine_staging_path }}"
+
+- name: Download wine source file
+  get_url:
+    url: "{{ wine_src_url }}"
+    dest: "{{ wine_src_path }}" 
+
+- name: Get sha256sum of the wine_staging file
+  stat:
+    path: "{{ wine_staging_path }}"
+    checksum_algorithm: sha256
+    get_checksum: yes
+  register: wine_staging_file
+
+- name: Save wine_staging file sha256 checksum
+  set_fact:
+    wine_staging_sha256: "{{ wine_staging_file.stat.checksum }}"
+
+- name: Get sha256sum of the wine src file
+  stat:
+    path: "{{ wine_src_path }}"
+    checksum_algorithm: sha256
+    get_checksum: yes
+  register: wine_staging_file
+
+- name: Save wine_src file sha256 checksum
+  set_fact:
+    wine_src_sha256: "{{ wine_staging_file.stat.checksum }}"

@@ -1,0 +1,16 @@
+---
+# tasks file for create-wine-sdk-yaml
+#
+- name: "Ensure {{ output_dir }} exists"
+  file:
+    state: directory
+    path: "{{ output_dir }}"
+- name: "Create {{ metainfo_filename }}"
+  template:
+    src: "{{ metainfo_filename }}"
+    dest: "{{ output_dir }}"
+
+- name: "Create {{ build_filename }}"
+  template:
+    src: "{{ build_filename }}"
+    dest: "{{ output_dir }}"

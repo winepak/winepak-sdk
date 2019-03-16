@@ -71,3 +71,14 @@ If you built Compat32/WoW64 support install those as well:
 
 ### Building an application
 See [winepak/applications](https://github.com/winepak/applications).
+
+
+## [Extra] Add the new version of Wine-staging automatically using ansible
+
+Just run:
+
+```bash
+ansible-playbook ansible_add_latest_staging.yaml
+```
+
+It should add the newest version of Wine-staging to ./wine at this repo, ready for a pull request.
