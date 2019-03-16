@@ -1,0 +1,6 @@
+---
+# defaults file for get_wine_files_data
+wine_url_base: "https://dl.winehq.org/wine/source"
+wine_staging_url_base: "https://github.com/wine-staging/wine-staging/archive"
+wine_src_path: "/tmp/wine.tar.xz"
+wine_staging_path: "/tmp/wine-staging.tar.gz"

@@ -1,0 +1,31 @@
+- name: Update winepak
+  hosts: localhost
+  vars:
+    - winepak_runtime_version: "3.0"
+  tasks:
+  - name: Get list of tags
+    uri:
+      url: "https://api.github.com/repos/wine-staging/wine-staging/tags"
+    register: tags
+
+  - name: Set fact for latest tag
+    set_fact:
+      latest_tag_name: "{{ tags.json[0].name }}"
+    when: latest_tag_name is not defined
+
+  - name: Get wine files data
+    include_role:
+      name: "ansible_roles/get-wine-files-data"
+    vars:
+      tag_name: "{{ latest_tag_name }}"
+
+  - name: Debug
+    debug:
+      msg: "wine_staging_url: {{ wine_staging_url }};wine_src_url: {{ wine_src_url }};wine_src_sha256: {{ wine_src_sha256 }}\nwine_staging_sha256: {{ wine_staging_sha256 }}"
+      
+  - name: Build winepak build files
+    include_role:
+      name: "ansible_roles/create-wine-sdk-yaml"
+    vars:
+      tag_name: "{{ latest_tag_name }}"
+      output_dir: "wine/{{ latest_tag_name[1:] }}-staging/"
